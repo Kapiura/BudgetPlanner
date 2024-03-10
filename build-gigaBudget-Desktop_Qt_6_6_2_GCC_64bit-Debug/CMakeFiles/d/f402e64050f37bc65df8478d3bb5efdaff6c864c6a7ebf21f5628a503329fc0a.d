@@ -356,77 +356,22 @@ gigaBudget_autogen/timestamp: \
   /home/kapiura/Qt/6.6.2/gcc_64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets.cmake \
   /home/kapiura/Qt/6.6.2/gcc_64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake \
   /home/kapiura/Qt/Tools/CMake/bin/cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCXXCompiler.cmake.in \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCXXCompilerABI.cpp \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCXXInformation.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeCompilerIdDetection.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineCompileFeatures.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeFindBinUtils.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeFindDependencyMacro.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeGenericSystem.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeNinjaFindMake.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeParseImplicitIncludeInfo.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeParseImplicitLinkInfo.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeParseLibraryArchitecture.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeSystem.cmake.in \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CMakeTestCompilerCommon.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CheckCXXCompilerFlag.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CheckCXXSourceCompiles.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CheckIncludeFileCXX.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/CheckLibraryExists.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/ADSP-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/ARMCC-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/ARMClang-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/AppleClang-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Borland-DetermineCompiler.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Clang-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Clang-DetermineCompilerInternal.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Cray-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Embarcadero-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Fujitsu-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/GHS-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/GNU-CXX.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/GNU-FindBinUtils.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/GNU.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/HP-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/IAR-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Intel-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/MSVC-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/NVHPC-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/NVIDIA-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/PGI-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/PathScale-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/SCO-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/TI-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Tasking-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/Watcom-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/XL-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/FeatureSummary.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/FindOpenGL.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/FindPackageHandleStandardArgs.cmake \
@@ -438,9 +383,7 @@ gigaBudget_autogen/timestamp: \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Internal/CheckCompilerFlag.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Internal/CheckFlagCommonConfig.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Internal/FeatureTesting.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/MacroAddFileDependencies.cmake \
-  /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Platform/Linux-Determine-CXX.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Platform/Linux-GNU-CXX.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Platform/Linux-GNU.cmake \
   /home/kapiura/Qt/Tools/CMake/share/cmake-3.27/Modules/Platform/Linux-Initialize.cmake \
@@ -451,6 +394,8 @@ gigaBudget_autogen/timestamp: \
   CMakeFiles/3.27.7/CMakeSystem.cmake \
   gigaBudget_autogen/moc_predefs.h \
   /home/kapiura/dev/BudgetPlanner/gigaBudget/CMakeLists.txt \
+  /home/kapiura/dev/BudgetPlanner/gigaBudget/databasemanager.cpp \
+  /home/kapiura/dev/BudgetPlanner/gigaBudget/databasemanager.h \
   /home/kapiura/dev/BudgetPlanner/gigaBudget/main.cpp \
   /home/kapiura/dev/BudgetPlanner/gigaBudget/mainwindow.cpp \
   /home/kapiura/dev/BudgetPlanner/gigaBudget/mainwindow.h \

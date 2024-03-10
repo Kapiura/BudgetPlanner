@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-95ad13173c12dcfec903.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "gigaBudget",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "gigaBudget::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gigaBudget-Debug-629122004333bb4e8c90.json",
+					"name" : "gigaBudget",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gigaBudget_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gigaBudget_autogen-Debug-93ec2dec94cc461e94ec.json",
+					"name" : "gigaBudget_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "gigaBudget_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-gigaBudget_autogen_timestamp_deps-Debug-702c2c07ece4716e8126.json",
+					"name" : "gigaBudget_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/kapiura/dev/BudgetPlanner/build-gigaBudget-Desktop_Qt_6_6_2_GCC_64bit-Debug",
+		"source" : "/home/kapiura/dev/BudgetPlanner/gigaBudget"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}
