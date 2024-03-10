@@ -1,0 +1,9 @@
+# ninja log v5
+4	383	1710104016098945744	gigaBudget_autogen/timestamp	91aa6eb391aec731
+4	383	1710104016098945744	gigaBudget_autogen/mocs_compilation.cpp	91aa6eb391aec731
+4	383	1710104016098945744	/home/kapiura/dev/BudgetPlanner/build-gigaBudget-Desktop_Qt_6_6_2_GCC_64bit-Debug/gigaBudget_autogen/timestamp	91aa6eb391aec731
+4	383	1710104016098945744	/home/kapiura/dev/BudgetPlanner/build-gigaBudget-Desktop_Qt_6_6_2_GCC_64bit-Debug/gigaBudget_autogen/mocs_compilation.cpp	91aa6eb391aec731
+383	2902	1710104018602854679	CMakeFiles/gigaBudget.dir/main.cpp.o	82788e737c1d4da5
+383	3338	1710104019049838423	CMakeFiles/gigaBudget.dir/gigaBudget_autogen/mocs_compilation.cpp.o	49f853982f6c57da
+383	4073	1710104019783811729	CMakeFiles/gigaBudget.dir/mainwindow.cpp.o	32811df3e75709fa
+4073	4656	1710104020371790345	gigaBudget	d9625acb07da7a52
