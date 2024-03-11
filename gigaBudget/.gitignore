@@ -73,4 +73,4 @@ CMakeLists.txt.user*
 *.exe
 
 # my own files
-notes.txt
+../notes.txt
