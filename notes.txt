@@ -1,0 +1,97 @@
+Manipulacja stringami QT
+  #include <QTextStream>
+  QTextStream qin(stdin) - jakby obiekt do wprowadzania danych przez terminal
+  QTextStream qout(stdout) - jakby obiekt do wyprowadzania danych przez terminal
+
+  pozniej mozna ich uzyc jak zwyklych std::cout  albo std::cin
+
+  qout << "Enter name:";
+  qout.flush();
+  // tutaj obiekt typu string z biblioteki qt
+  QString name = qin.readLine();
+  qout << "Hello " << name;
+  qout.flush();
+
+  
+#include <QDebug> 
+  mozna debugowac jakies gowno i wgl
+  ale jeszcze nie wiem
+
+
+Mozna za cpp
+mozna za pomoc Qt
+mozna polaczyc
+
+
+wtedy robisz
+#include <QDebug>
+
+void mixed()
+{
+  QTextStream qin(stdin);
+  qInfo() << "Enter ur name";
+  QString name = qin.readLine();
+  qInfo() << "siena" << name;
+}
+
+QObject co to za cudasne rzeczy uwu 
+moge sobie base class stworzyc jako QObject
+i wtedy mozna sobie dac includa QObject
+
+tworzy sie nam klasa automatycznie klasa
+dziedziczy po QObject
+konstruktor od razu tworzy
+
+signals:
+public slots:
+
+sa takie rzeczy 
+ale co one znacza
+
+dobra no to jedziemy z tym koksem co to znaczy
+kanal komunikacyjny pomiedzy pomiedzy obiektami
+damn deep
+object moze sobie miec signals 2 np
+drugi ma slotsy
+
+signal = wysylanie flary takiej dzieki ktorej 
+slot = komunikuje sie bo widzi flare i cos wykonuje
+
+i w takije klasie
+signal sobie zrobmy
+signals:
+  void close();
+public slots:
+  void dostuff();
+
+teraz trzeba zrobic
+nie musimy implementowac signalsow NOWAY
+ale za to slotsy trzeba zdefiniowac
+o tak tak
+robimy refactor add definition i essa
+automatycznie wtedy tworzy sie definicja
+a teraz jak je polaczyc
+mamy sobie slota
+
+void slot()
+{
+  qInfo() << "Dupa\n";
+  emit close();
+}
+
+emitujemy sobie closa NOWAY
+
+i mamy sobie np maina
+Test test;//nasza klasa
+test.dostuff();
+
+teraz polaczymy tego signala ze slotstem 
+a to tez musi byc Qobject nomc
+
+//connect the signal and rhe slot
+QObject::connect(&test, %Test::close, &a, QCoreApp::quit);
+i tutaj mamy przyjklad ze laczymy sobie sygnal z klasy test o nazwie close z glownym obiektem naszej aplkiacji a i jej slotem quit
+ktore zamyka nam po prostu aplikacje boze co za cudo
+kto na to wpadl niemozlwie
+to niby dziala ale czasmi potrzeba sie wiecej
+QObject::connect(&test, %Test::close, &a, QCoreApp::quit, Qt::QueuedConnection);
