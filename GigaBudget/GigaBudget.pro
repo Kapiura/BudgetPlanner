@@ -10,14 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     databasemanager.cpp \
-    databasemanager.cpp \
     main.cpp \
     mainwindow.cpp \
     raporthanlder.cpp \
     userpanel.cpp
 
 HEADERS += \
-    databasemanager.h \
     databasemanager.h \
     mainwindow.h \
     raporthanlder.h \
