@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# ANSI color escape codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[1;34m'
+NC='\033[0m' # No Color
+
+
+# Navigate to project directory
+cd GigaBudget;
+
+# Generating qmake file 
+# Check if qmake is installed
+# If yes, run it
+# If not, install qmake 
+if command -v qmake >/dev/null 2>&1; then
+  echo -e "${BLUE}Building project using qmake${NC}";
+  qmake GigaBudget.pro;
+else
+  echo -e "${RED}qmake isn't installed on your device${NC}";
+  echo -e "${BLUE}Do you want to install qmake on your pc? (y/n)${NC}";
+  read choice;
+  case "$choice" in 
+    y|Y )
+      sudo dnf install qt5-devel;
+      if [ $? -ne 0 ]; then
+        echo -e "${RED}Something went wrong! Try to install qmake manually.${NC}";
+        exit 1;
+      fi
+      ;;
+    n|N )
+      echo -e "${BLUE}Aborted. Please install qmake manually if you want to build and run this program.${NC}"
+      exit 1;
+      ;;
+    * )
+      echo -e "${RED}Invalid choice. Please type y (yes) or n (No)${NC}";
+      exit 1;
+      ;;
+  esac
+  qmake GigaBudget.pro;
+fi
+
+# Check if qmake succeeded
+if [ $? -ne 0 ]; then
+  echo -e "${RED}Error: qmake failed.${NC}";
+  exit 1;
+fi
+
+# Build the whole project
+make;
+
+# Check if make succeeded
+if [ $? -ne 0 ]; then
+  echo -e "${RED}Error: make failed.${NC}";
+  exit 1;
+fi
+
+echo -e "${GREEN}Building project successful.${NC}";
+echo -e "${BLUE}Do you want to run it? (y/n)${NC}";
+read run;
+run=$(echo "$run" | tr '[:upper:]' '[:lower:]')
+if [ "$run" = "y" ]; then
+  ./GigaBudget;
+else
+  echo -e "Ok, bye ;3${NC}";
+fi
+
+exit 0;
