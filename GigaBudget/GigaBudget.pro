@@ -9,11 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    databasemanager.cpp \
+    databasemanager.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    raporthanlder.cpp \
+    userpanel.cpp
 
 HEADERS += \
-    mainwindow.h
+    databasemanager.h \
+    databasemanager.h \
+    mainwindow.h \
+    raporthanlder.h \
+    userpanel.h
 
 FORMS += \
     mainwindow.ui
