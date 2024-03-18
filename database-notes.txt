@@ -1,0 +1,73 @@
+Users
+-idu
+-name
+-password
+-description
+
+Income
+-idi
+-u_id
+-amount
+-currency
+-data
+-category
+
+Expenses
+-ide
+-u_id
+-amount
+-currency
+-data
+-category
+
+Savings
+-ids
+-u_id
+-amount
+-currency
+-data
+-goal
+
+
+-- Create Users Table
+CREATE TABLE Users (
+    idu INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    password VARCHAR(50),
+    description TEXT,
+    UNIQUE (name)
+);
+
+-- Create Income Table
+CREATE TABLE Income (
+    idi INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    u_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    date DATE,
+    category ENUM('salary', 'bonus', 'investment', 'other') NOT NULL,
+    FOREIGN KEY (u_id) REFERENCES Users(idu)
+);
+
+-- Create Expenses Table
+CREATE TABLE Expenses (
+    ide INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    u_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    date DATE,
+    category ENUM('rent', 'groceries', 'utilities', 'dining', 'travel', 'other') NOT NULL,
+    FOREIGN KEY (u_id) REFERENCES Users(idu)
+);
+
+-- Create Savings Table
+CREATE TABLE Savings (
+    ids INT AUTO_INCREMENT PRIMARY KEY,
+    u_id INT,
+    amount DECIMAL(10,2),
+    currency VARCHAR(3),
+    date DATE,
+    goal VARCHAR(255),
+    FOREIGN KEY (u_id) REFERENCES Users(idu)
+);
+
