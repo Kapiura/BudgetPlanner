@@ -29,7 +29,7 @@ Planer Budżetu Osobistego to aplikacja desktopowa, stworzona w języku C++ przy
 ## Instalacja
 
 1. Pobranie repo 'git clone https://github.com/Kapiura/BudgetPlanner.git';
-2. Uruchomienie pliku 'sudo ./build_and_run.sh'
+2. Uruchomienie pliku 'sudo ./run'
 
 ## Autor
 
