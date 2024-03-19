@@ -1,15 +1,22 @@
 #include "databasemanager.h"
 #include <QtSql/QSqlError>
 #include <QDebug>
+#include <QtSql/QSqlDatabase>
 
-DatabaseManager::DatabaseManager(QObject *parent)
-    : QObject{parent}, dbName("gigaBudget"),userName("root"),password("!@#QWE123qwe"),host("localhost"), port(3306)
+//DatabaseManager::DatabaseManager(QObject *parent)
+ //   : QObject{parent}
+//{
+ //   qDebug() << "Default constructor of database manager class";
+//}
+
+DatabaseManager::DatabaseManager(const QString &dbName, const QString &userName, const QString &password, const QString &host, const int &port)
+    : _dbName(dbName),_userName(userName),_password(password),_host(host),_port(port)
 {
     db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName(host);
-    db.setPort(port);
-    db.setUserName(userName);
-    db.setPassword(password);
+    db.setHostName(_host);
+    db.setPort(_port);
+    db.setUserName(_userName);
+    db.setPassword(_password);
 
     if(!db.open())
     {
@@ -17,7 +24,7 @@ DatabaseManager::DatabaseManager(QObject *parent)
     }
     else
     {
-        qDebug() << "Connecting to database went well, database name: " << dbName;
+        qDebug() << "Connecting to database went well, database name: " << _dbName;
     }
 }
 
