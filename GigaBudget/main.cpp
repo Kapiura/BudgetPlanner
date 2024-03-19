@@ -7,7 +7,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    DatabaseManager dbHandler("gigaBudget","root","!@#QWE123qwe","localhost",3306);
+    DatabaseManager* dbHandler = new DatabaseManager("gigaBudget","root","!@#QWE123qwe","localhost",3306);
     w.show();
+    delete dbHandler;
     return a.exec();
 }
