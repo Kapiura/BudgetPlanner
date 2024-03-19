@@ -10,6 +10,7 @@ class DatabaseManager : public QObject
 public:
     // constructor
     explicit DatabaseManager(QObject *parent = nullptr);
+    ~DatabaseManager();
 
 signals:
 
