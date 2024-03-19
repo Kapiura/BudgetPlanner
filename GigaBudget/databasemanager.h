@@ -1,8 +1,6 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include <QObject>
-
 class DatabaseManager : public QObject
 {
     Q_OBJECT

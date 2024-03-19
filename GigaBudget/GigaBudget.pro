@@ -12,13 +12,13 @@ SOURCES += \
     databasemanager.cpp \
     main.cpp \
     mainwindow.cpp \
-    raporthanlder.cpp \
+    raporthandler.cpp \
     userpanel.cpp
 
 HEADERS += \
     databasemanager.h \
     mainwindow.h \
-    raporthanlder.h \
+    raporthandler.h \
     userpanel.h
 
 FORMS += \
