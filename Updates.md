@@ -1,8 +1,17 @@
 # Updates of app
 
-## Aktualizacja 1
+## Aktualizacja 2
 
-### Dużo nowych plików
+- **Baza danych**
+    - Stworzenie w klasie DatabaseManager konstruktora łączącego się z bazą danych projektu
+
+- **User Panel**
+    - Inicjowanie panelu uzytkownika
+    - tworzenie dynamicznigo okienka z logowaniem oraz wyborem użytkowników
+    - wyswietlanie panelu w glównym oknie projektu
+
+
+## Aktualizacja 1
 
 - **Plik run**
   - Prosty skrypt wejściowy, który przenosi do katalogu projektu, buduje go i uruchamia, jeśli wszystko przebiega pomyślnie. Sprawdza, czy qmake jest zainstalowany, a jeśli nie, to próbuje go zainstalować, jednakże tylko na systemach typu Fedora.
