@@ -9,20 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    databasemanager.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    raporthandler.cpp \
-    userpanel.cpp
+    src/databasemanager.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/raporthandler.cpp \
+    src/userpanel.cpp
 
 HEADERS += \
-    databasemanager.h \
-    mainwindow.h \
-    raporthandler.h \
-    userpanel.h
+    include/databasemanager.h \
+    include/mainwindow.h \
+    include/raporthandler.h \
+    include/userpanel.h
 
 FORMS += \
-    mainwindow.ui
+    ui/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

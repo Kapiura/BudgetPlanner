@@ -7,6 +7,8 @@
 #include <QLabel>
 #include <QSqlQuery>
 
+class Mainwindow;
+
 class UserPanel : public QObject
 {
     Q_OBJECT
@@ -22,6 +24,8 @@ public:
 signals:
 private:
     QWidget* _loginPanel;
+signals:
+    void deleteLoginPanel(); // Declare the signal here
 };
 
 #endif // USERPANEL_H

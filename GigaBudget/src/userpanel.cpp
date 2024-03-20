@@ -1,4 +1,4 @@
-#include "userpanel.h"
+#include "include/userpanel.h"
 #include <QtSql/QSqlError>
 
 UserPanel::UserPanel(QObject *parent)
@@ -26,10 +26,10 @@ QWidget* UserPanel::creatingLoginPanel(QStringList& userList)
 
         QPushButton* loginButton = new QPushButton("Login");
 
-        connect(loginButton, &QPushButton::clicked, [=] ()
-                {
-                    qDebug() << "Logging user: " << username;
-                });
+        // connect(loginButton, &QPushButton::clicked, [=] ()
+        //         {
+        //             qDebug() << "Logging user: " << username;
+        //         });
 
         QLabel* usernameLabel = new QLabel(username);
         userLayout->addWidget(usernameLabel);
@@ -37,10 +37,17 @@ QWidget* UserPanel::creatingLoginPanel(QStringList& userList)
 
         userPanel->setLayout(userLayout);
         layout->addWidget(userPanel);
+
+        connect(loginButton, &QPushButton::clicked, [=] ()
+                {
+            qDebug() << "Logging user: " << username;
+            emit deleteLoginPanel();
+        });
     }
 
     _loginPanel->setLayout(layout);
     return _loginPanel;
 }
+
 
 

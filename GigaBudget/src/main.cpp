@@ -1,8 +1,8 @@
-#include "mainwindow.h"
+#include "include/mainwindow.h"
 
 #include <QApplication>
-#include <databasemanager.h>
-#include <userpanel.h>
+#include <include/databasemanager.h>
+#include <include/userpanel.h>
 
 int main(int argc, char *argv[])
 {

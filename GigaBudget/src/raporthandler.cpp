@@ -1,4 +1,4 @@
-#include "raporthandler.h"
+#include "include/raporthandler.h"
 
 RaportHandler::RaportHandler(QObject *parent)
     : QObject{parent}

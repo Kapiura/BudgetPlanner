@@ -3,8 +3,8 @@
 
 #include "ui_mainwindow.h"
 #include <QMainWindow>
-#include <databasemanager.h>
-#include <userpanel.h>
+#include <include/databasemanager.h>
+#include <include/userpanel.h>
 #include <QtSql/QSqlQuery>
 
 QT_BEGIN_NAMESPACE
@@ -27,6 +27,9 @@ private:
     Ui::MainWindow *ui;
     DatabaseManager* dbHandler;
     UserPanel* up;
+
+public slots:
+    void deleteLoginPanel();
 
 };
 #endif // MAINWINDOW_H

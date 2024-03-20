@@ -1,5 +1,4 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "include/mainwindow.h"
 #include <QtSql/QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -9,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     dbHandler = new DatabaseManager("gigaBudget","root","!@#QWE123qwe","localhost",3306);
     up = new UserPanel();
+    connect(up, &UserPanel::deleteLoginPanel, this, &MainWindow::deleteLoginPanel);
 }
 
 MainWindow::~MainWindow()
@@ -29,6 +29,18 @@ void MainWindow::userPanelLoad()
         userList << query.value(0).toString();
     }
     QWidget* gl = up->creatingLoginPanel(userList);
-    ui->gridLayout->addWidget(gl);
+    ui->verticalLayout->addWidget(gl);
 }
+
+void MainWindow::deleteLoginPanel()
+{
+    qDebug() << "Deleting Login Panel";
+    QLayoutItem* item;
+    while((item = ui->verticalLayout->takeAt(0)) != nullptr)
+    {
+        delete item->widget();
+        delete item;
+    }
+}
+
 
