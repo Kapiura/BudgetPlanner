@@ -9,6 +9,7 @@
     - Inicjowanie panelu uzytkownika
     - tworzenie dynamicznigo okienka z logowaniem oraz wyborem użytkowników
     - wyswietlanie panelu w glównym oknie projektu
+    - wyswietlanie dynamicznie uzytkownikow z bazy danych wraz z ich nazwa oraz przyciskiem login
 
 
 ## Aktualizacja 1

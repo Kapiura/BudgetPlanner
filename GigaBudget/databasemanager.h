@@ -16,6 +16,7 @@ public:
 
 
     QSqlQuery returnQuery(const QString& query);
+    QSqlDatabase returnDataBase(){ return db;};
 
 signals:
 

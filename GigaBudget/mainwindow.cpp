@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QtSql/QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -7,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     dbHandler = new DatabaseManager("gigaBudget","root","!@#QWE123qwe","localhost",3306);
-    up = new UserPanel(this);
+    up = new UserPanel();
 }
 
 MainWindow::~MainWindow()
@@ -19,11 +20,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::userPanelLoad()
 {
-    QString queryString = "SELECT username from users;";
-    QSqlQuery query = dbHandler->returnQuery(queryString);
-
-    up->creatingLoginPanel(query);
-    QWidget* gl = up->returnGridLaylout();
-    ui->gridLayout->addWidget(gl); // Assuming ui->gridLayout is a layout, not a widget
+    QString queryString = "SELECT name FROM users;";
+    qDebug() << queryString;
+    QSqlQuery query(queryString,dbHandler->returnDataBase());
+    QStringList userList;
+    while(query.next())
+    {
+        userList << query.value(0).toString();
+    }
+    QWidget* gl = up->creatingLoginPanel(userList);
+    ui->gridLayout->addWidget(gl);
 }
 

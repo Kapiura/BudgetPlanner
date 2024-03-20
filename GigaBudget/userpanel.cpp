@@ -1,43 +1,46 @@
 #include "userpanel.h"
+#include <QtSql/QSqlError>
 
 UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
 {
-    loginPanel.gridLaylout = new QWidget;
+    _loginPanel = new QWidget;
+    qDebug() << "Creating userpanel object";
 }
 
-void UserPanel::creatingLoginPanel(QSqlQuery& query)
+UserPanel::~UserPanel()
 {
-    //LoginPanel loginPanel;
-    while(query.next())
+    delete _loginPanel;
+}
+
+QWidget* UserPanel::creatingLoginPanel(QStringList& userList)
+{
+    qDebug() << "Creating layout";
+
+    QVBoxLayout* layout = new QVBoxLayout;
+
+    foreach (QString username, userList)
     {
-        loginPanel.username = query.value(0).toString();
-        loginPanel.usersList << loginPanel.username;
-        qDebug() << loginPanel.username;
+        QWidget* userPanel = new QWidget;
+        QVBoxLayout* userLayout = new QVBoxLayout;
+
+        QPushButton* loginButton = new QPushButton("Login");
+
+        connect(loginButton, &QPushButton::clicked, [=] ()
+                {
+                    qDebug() << "Logging user: " << username;
+                });
+
+        QLabel* usernameLabel = new QLabel(username);
+        userLayout->addWidget(usernameLabel);
+        userLayout->addWidget(loginButton);
+
+        userPanel->setLayout(userLayout);
+        layout->addWidget(userPanel);
     }
 
-    loginPanel.layout = new QVBoxLayout;
-
-    foreach (QString username, loginPanel.usersList)
-    {
-        loginPanel.userPanel = new QWidget;
-        loginPanel.userLayout = new QVBoxLayout(loginPanel.userPanel);
-
-        loginPanel.loginButton = new QPushButton("Login");
-
-        connect(loginPanel.loginButton, &QPushButton::clicked, [=]()
-        {
-            qDebug() << "Logging user: " << username;
-        });
-
-        loginPanel.usernameLabel = new QLabel(loginPanel.username);
-
-        loginPanel.userLayout->addWidget(loginPanel.usernameLabel);
-        loginPanel.userLayout->addWidget(loginPanel.loginButton);
-
-        loginPanel.layout->addWidget(loginPanel.userPanel);
-    }
-    loginPanel.gridLaylout->setLayout(loginPanel.layout);
+    _loginPanel->setLayout(layout);
+    return _loginPanel;
 }
 
 

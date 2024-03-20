@@ -12,12 +12,15 @@ DatabaseManager::DatabaseManager(QObject *parent)
 DatabaseManager::DatabaseManager(const QString &dbName, const QString &userName, const QString &password, const QString &host, const int &port)
     : _dbName(dbName),_userName(userName),_password(password),_host(host),_port(port)
 {
+    // Add MySQL driver
     db = QSqlDatabase::addDatabase("QMYSQL");
+
+    // Set connection parameters
     db.setHostName(_host);
-    db.setPort(_port);
+    db.setPort(port);
+    db.setDatabaseName(_dbName);
     db.setUserName(_userName);
     db.setPassword(_password);
-
     if(!db.open())
     {
         qDebug() << "Database connection error: " << db.lastError().text();

@@ -7,13 +7,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
-    // Create main window
     MainWindow w;
-    w.show(); // Show main window
-
-    // Call userPanelLoad after main window is shown
+    w.show();
     w.userPanelLoad();
-
-    return a.exec(); // Start event loop
+    return a.exec();
 }

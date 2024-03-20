@@ -12,24 +12,16 @@ class UserPanel : public QObject
     Q_OBJECT
 public:
     explicit UserPanel(QObject *parent = nullptr);
+    ~UserPanel();
 
     void creatingLoginPanel(QSqlQuery& query);
-    QWidget* returnGridLaylout() {return loginPanel.gridLaylout;};
+    //void creatingLoginPanel(QStringList& userList);
+    QWidget* creatingLoginPanel(QStringList& userList);
+    QWidget* returnGridLaylout() {return _loginPanel;};
 
 signals:
 private:
-    struct LoginPanel
-    {
-        QWidget* gridLaylout;
-        QStringList usersList;
-        QString username;
-        QVBoxLayout* layout;
-        QWidget* userPanel;
-        QVBoxLayout* userLayout;
-        QPushButton* loginButton;
-        QLabel* usernameLabel;
-    };
-    LoginPanel loginPanel;
+    QWidget* _loginPanel;
 };
 
 #endif // USERPANEL_H
