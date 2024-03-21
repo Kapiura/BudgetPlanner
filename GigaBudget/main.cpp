@@ -10,6 +10,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     w.userPanelLoginLoad();
-    w.userPanelLoad();
+    //w.userPanelLoad();
     return a.exec();
 }

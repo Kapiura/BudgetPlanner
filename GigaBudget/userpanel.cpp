@@ -6,7 +6,6 @@ UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
 {
     _loginPanel = new QWidget;
-    qDebug() << "Creating userpanel object";
 }
 
 UserPanel::~UserPanel()
@@ -22,7 +21,6 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
     {
         QString username = key;
         unsigned int id = value;
-        qDebug() << username << " " << id;
         QWidget* userPanel = new QWidget;
         QVBoxLayout* userLayout = new QVBoxLayout;
         QPushButton* loginButton = new QPushButton("Login");

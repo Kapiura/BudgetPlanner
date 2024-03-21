@@ -27,27 +27,22 @@ MainWindow::~MainWindow()
 void MainWindow::userPanelLoginLoad()
 {
     QString queryString = "SELECT name, idu FROM users;";
-    qDebug() << queryString;
     QSqlQuery query(queryString,dbHandler->returnDataBase());
     QMap<QString, int> users;
     while(query.next())
     {
         QString username = query.value(0).toString();
-        qDebug() << username;
         users.insert(query.value(0).toString(), query.value(1).toInt());
 
     }
     QWidget* gl = up->creatingLoginPanel(users);
     ui->stackedWidget->setCurrentIndex(0);
-    ui->verticalLayout->addWidget(gl);
+    ui->gridLayout_4->addWidget(gl);
 }
 
 void MainWindow::login()
 {
-    qDebug()<< "login";
-    qDebug() << "Username = " << DatabaseManager::currentUsername << "\nid: " << DatabaseManager::userId;
     ui->stackedWidget->setCurrentIndex(1);
-    ui->label->setText(DatabaseManager::currentUsername);
 }
 
 void MainWindow::userPanelLoad()
