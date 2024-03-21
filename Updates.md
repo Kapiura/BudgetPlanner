@@ -10,6 +10,8 @@
     - tworzenie dynamicznigo okienka z logowaniem oraz wyborem użytkowników
     - wyswietlanie panelu w glównym oknie projektu
     - wyswietlanie dynamicznie uzytkownikow z bazy danych wraz z ich nazwa oraz przyciskiem login
+    - Przycisk logowania dziala i loguje w pewnym sensie uzytkownika
+    - poprawne łączenie z baza danych
 
 
 ## Aktualizacja 1
