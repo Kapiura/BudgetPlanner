@@ -1,4 +1,5 @@
-#include "include/userpanel.h"
+#include "userpanel.h"
+#include "databasemanager.h"
 #include <QtSql/QSqlError>
 
 UserPanel::UserPanel(QObject *parent)
@@ -13,24 +14,18 @@ UserPanel::~UserPanel()
     delete _loginPanel;
 }
 
-QWidget* UserPanel::creatingLoginPanel(QStringList& userList)
+
+QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
 {
-    qDebug() << "Creating layout";
-
     QVBoxLayout* layout = new QVBoxLayout;
-
-    foreach (QString username, userList)
+    for (auto [key, value]: users.asKeyValueRange())
     {
+        QString username = key;
+        unsigned int id = value;
+        qDebug() << username << " " << id;
         QWidget* userPanel = new QWidget;
         QVBoxLayout* userLayout = new QVBoxLayout;
-
         QPushButton* loginButton = new QPushButton("Login");
-
-        // connect(loginButton, &QPushButton::clicked, [=] ()
-        //         {
-        //             qDebug() << "Logging user: " << username;
-        //         });
-
         QLabel* usernameLabel = new QLabel(username);
         userLayout->addWidget(usernameLabel);
         userLayout->addWidget(loginButton);
@@ -38,16 +33,16 @@ QWidget* UserPanel::creatingLoginPanel(QStringList& userList)
         userPanel->setLayout(userLayout);
         layout->addWidget(userPanel);
 
-        connect(loginButton, &QPushButton::clicked, [=] ()
+        connect(loginButton, &QPushButton::clicked,  [=] ()
                 {
-            qDebug() << "Logging user: " << username;
-            emit deleteLoginPanel();
-        });
-    }
+                    DatabaseManager::currentUsername = username;
+                    DatabaseManager::userId = id;
+                    emit login();
 
+                });
+    }
     _loginPanel->setLayout(layout);
     return _loginPanel;
 }
-
 
 

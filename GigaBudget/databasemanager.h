@@ -18,6 +18,10 @@ public:
     QSqlQuery returnQuery(const QString& query);
     QSqlDatabase returnDataBase(){ return db;};
 
+    // current user
+    static QString currentUsername;
+    static int userId;
+
 signals:
 
 private:
@@ -31,6 +35,9 @@ private:
 
     // query
     QSqlQuery query;
+
+
+
 
 };
 

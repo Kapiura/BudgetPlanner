@@ -1,4 +1,4 @@
-#include "include/databasemanager.h"
+#include "databasemanager.h"
 #include <QtSql/QSqlError>
 #include <QDebug>
 #include <QtSql/QSqlDatabase>
@@ -41,4 +41,7 @@ QSqlQuery DatabaseManager::returnQuery(const QString& query)
     QSqlQuery tempQuery(query,db);
     return tempQuery;
 }
+
+QString DatabaseManager::currentUsername = "Dupa";
+int DatabaseManager::userId = 0;
 

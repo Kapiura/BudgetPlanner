@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql uitools
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,20 +9,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/databasemanager.cpp \
-    src/main.cpp \
-    src/mainwindow.cpp \
-    src/raporthandler.cpp \
-    src/userpanel.cpp
+    databasemanager.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    userpanel.cpp
 
 HEADERS += \
-    include/databasemanager.h \
-    include/mainwindow.h \
-    include/raporthandler.h \
-    include/userpanel.h
+    databasemanager.h \
+    mainwindow.h \
+    userpanel.h
 
 FORMS += \
-    ui/mainwindow.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

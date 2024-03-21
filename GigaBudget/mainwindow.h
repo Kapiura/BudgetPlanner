@@ -3,9 +3,10 @@
 
 #include "ui_mainwindow.h"
 #include <QMainWindow>
-#include <include/databasemanager.h>
-#include <include/userpanel.h>
+#include <databasemanager.h>
+#include <userpanel.h>
 #include <QtSql/QSqlQuery>
+#include <QStackedWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,15 +22,18 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void userPanelLoginLoad();
     void userPanelLoad();
+
 
 private:
     Ui::MainWindow *ui;
     DatabaseManager* dbHandler;
     UserPanel* up;
+    QStackedWidget *stackedWidget;
 
 public slots:
-    void deleteLoginPanel();
+    void login();
 
 };
 #endif // MAINWINDOW_H

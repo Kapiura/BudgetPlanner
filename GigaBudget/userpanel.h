@@ -19,13 +19,14 @@ public:
     void creatingLoginPanel(QSqlQuery& query);
     //void creatingLoginPanel(QStringList& userList);
     QWidget* creatingLoginPanel(QStringList& userList);
+    QWidget* creatingLoginPanel(QMap<QString, int>& users);
     QWidget* returnGridLaylout() {return _loginPanel;};
 
 signals:
 private:
     QWidget* _loginPanel;
 signals:
-    void deleteLoginPanel(); // Declare the signal here
+    void login(); // Declare the signal here
 };
 
 #endif // USERPANEL_H
