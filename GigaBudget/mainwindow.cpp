@@ -36,7 +36,11 @@ void MainWindow::userPanelLoginLoad()
 
     }
     QWidget* gl = up->creatingLoginPanel(users);
-    ui->stackedWidget->setCurrentIndex(0);
+
+
+
+
+    ui->tabWidget_2->setCurrentIndex(0);
     ui->gridLayout_4->addWidget(gl);
 }
 
@@ -47,7 +51,17 @@ void MainWindow::login()
 
 void MainWindow::userPanelLoad()
 {
-    qDebug() << "lol";
+    QString queryString = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='expenses' AND COLUMN_NAME='category'";
+    QSqlQuery query(queryString, dbHandler->returnDataBase());
+    query.exec();
+    while(query.next())
+    {
+        QString temp = query.value(0).toString();
+        up->loadingCategories(temp);
+
+    }
+
+
 }
 
 

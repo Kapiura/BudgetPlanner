@@ -25,6 +25,9 @@ public:
     void userPanelLoginLoad();
     void userPanelLoad();
 
+    int returnPageIndex() const {return ui->stackedWidget->currentIndex();};
+    void setDefaultPageIndex() { ui->stackedWidget->setCurrentIndex(0);};
+
 
 private:
     Ui::MainWindow *ui;

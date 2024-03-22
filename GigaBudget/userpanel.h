@@ -22,6 +22,10 @@ public:
     QWidget* creatingLoginPanel(QMap<QString, int>& users);
     QWidget* returnGridLaylout() {return _loginPanel;};
 
+    void loadingCategories(QString& cat);
+
+
+
 signals:
 private:
     QWidget* _loginPanel;

@@ -43,4 +43,34 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
     return _loginPanel;
 }
 
+void UserPanel::loadingCategories(QString& cat)
+{
+    std::string word = "enum";
+    std::string temp;
+    temp = cat.toStdString().erase(cat.toStdString().find(word),word.length());
+    temp.erase(temp.find("("),1);
+    temp.erase(temp.find(")"),1);
+    size_t n;
+    do
+    {
+        n = temp.find("'");
+        if(n != std::string::npos)
+        temp = temp.erase(n,1);
+    }
+    while(n != std::string::npos);
+    // QStringList list;
+    qDebug() << temp; // 'rent','groceries','utilities','dining','travel','work','toiletries','household items','medicines','other'
+    QStringList list;
+
+
+
+
+    // if (query.exec()) {
+    //     while (query.next()) {
+    //         QString columnType = query.value(0).toString();
+    //     }
+    // } else {
+    //     qDebug() << "Query failed: " << query.lastError().text();
+    // }
+}
 
