@@ -54,11 +54,20 @@ void MainWindow::userPanelLoad()
     QString queryString = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='expenses' AND COLUMN_NAME='category'";
     QSqlQuery query(queryString, dbHandler->returnDataBase());
     query.exec();
+    // loading categories in expenses
     while(query.next())
     {
         QString temp = query.value(0).toString();
-        up->loadingCategories(temp);
-
+        ui->category_expenses->addItems(up->loadingCategories(temp));
+    }
+    // loading categories in incomes
+    queryString = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='incomes' AND COLUMN_NAME='category'";
+    query.prepare(queryString);
+    query.exec();
+    while(query.next())
+    {
+        QString temp = query.value(0).toString();
+        ui->category_incomes->addItems(up->loadingCategories(temp));
     }
 
 

@@ -22,7 +22,7 @@ public:
     QWidget* creatingLoginPanel(QMap<QString, int>& users);
     QWidget* returnGridLaylout() {return _loginPanel;};
 
-    void loadingCategories(QString& cat);
+    QStringList loadingCategories(QString& cat);
 
 
 
