@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
+#include <QPushButton>
 
 class DatabaseManager : public QObject
 {
@@ -11,18 +12,25 @@ class DatabaseManager : public QObject
 public:
     // constructor
     explicit DatabaseManager(QObject* parent = nullptr);
-    DatabaseManager(const QString& dbName,const QString& userName,const QString& password,const QString&host,const int& port);
+    DatabaseManager(const DatabaseManager &) = delete;
+    DatabaseManager(DatabaseManager &&) = delete;
+    DatabaseManager &operator=(const DatabaseManager &) = delete;
+    DatabaseManager &operator=(DatabaseManager &&) = delete;
+    DatabaseManager(const QString &dbName, const QString &userName,
+                    const QString &password, const QString &host,
+                    const int &port);
     ~DatabaseManager();
-
 
     QSqlQuery returnQuery(const QString& query);
     QSqlDatabase returnDataBase(){ return db;};
 
-    // current user
+    // adding expenses
+    void addExpenses(int& id, double& amount, QString& currency, QString& category, QString& desc);
+    void addIncomes(int& id, double& amount, QString& currency, QString& category, QString& desc);
+
+    // current user variables
     static QString currentUsername;
     static int userId;
-
-signals:
 
 private:
     QSqlDatabase db;
@@ -36,9 +44,7 @@ private:
     // query
     QSqlQuery query;
 
-
-
-
+signals:
 };
 
 #endif // DATABASEMANAGER_H

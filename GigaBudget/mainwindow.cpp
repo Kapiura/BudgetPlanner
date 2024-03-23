@@ -33,13 +33,8 @@ void MainWindow::userPanelLoginLoad()
     {
         QString username = query.value(0).toString();
         users.insert(query.value(0).toString(), query.value(1).toInt());
-
     }
     QWidget* gl = up->creatingLoginPanel(users);
-
-
-
-
     ui->tabWidget_2->setCurrentIndex(0);
     ui->gridLayout_4->addWidget(gl);
 }
@@ -49,7 +44,7 @@ void MainWindow::login()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::userPanelLoad()
+void MainWindow::addingCategoriesItems()
 {
     QString queryString = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='expenses' AND COLUMN_NAME='category'";
     QSqlQuery query(queryString, dbHandler->returnDataBase());
@@ -58,7 +53,7 @@ void MainWindow::userPanelLoad()
     while(query.next())
     {
         QString temp = query.value(0).toString();
-        ui->category_expenses->addItems(up->loadingCategories(temp));
+        ui->categoryExpenses->addItems(up->loadingCategories(temp));
     }
     // loading categories in incomes
     queryString = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='incomes' AND COLUMN_NAME='category'";
@@ -67,14 +62,34 @@ void MainWindow::userPanelLoad()
     while(query.next())
     {
         QString temp = query.value(0).toString();
-        ui->category_incomes->addItems(up->loadingCategories(temp));
+        ui->categoryIncomes->addItems(up->loadingCategories(temp));
     }
-
-
 }
 
+void MainWindow::setDefaultPageIndex()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->paneluserTabs->setCurrentIndex(0);
+};
 
 
+void MainWindow::on_buttonExpenses_clicked()
+{
+    int id = DatabaseManager::userId;
+    double amount = ui->amountExpenses->value();
+    QString currency = ui->currencyExpenses->currentText();
+    QString desc = ui->descExpenses->text();
+    QString category = ui->categoryExpenses->currentText();
+    dbHandler->addExpenses(id, amount, currency, category, desc);
+}
 
-
+void MainWindow::on_buttonIncomes_clicked()
+{
+    int id = DatabaseManager::userId;
+    double amount = ui->amountIncomes->value();
+    QString currency = ui->currencyIncomes->currentText();
+    QString desc = ui->descIncomes->text();
+    QString category = ui->categoryIncomes->currentText();
+    dbHandler->addIncomes(id, amount, currency, category, desc);
+}
 

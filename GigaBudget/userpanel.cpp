@@ -16,7 +16,9 @@ UserPanel::~UserPanel()
 
 QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
 {
+    // created new layot
     QVBoxLayout* layout = new QVBoxLayout;
+    // dynamically creating user login layot and adding it to the upper one
     for (auto [key, value]: users.asKeyValueRange())
     {
         QString username = key;
@@ -31,12 +33,12 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
         userPanel->setLayout(userLayout);
         layout->addWidget(userPanel);
 
+        // button changes current username and user id
         connect(loginButton, &QPushButton::clicked,  [=] ()
                 {
                     DatabaseManager::currentUsername = username;
                     DatabaseManager::userId = id;
                     emit login();
-
                 });
     }
     _loginPanel->setLayout(layout);
@@ -45,11 +47,14 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
 
 QStringList UserPanel::loadingCategories(QString& cat)
 {
+    // deleting enum word and ()
     std::string word = "enum";
     std::string temp;
     temp = cat.toStdString().erase(cat.toStdString().find(word),word.length());
     temp.erase(temp.find("("),1);
     temp.erase(temp.find(")"),1);
+
+    // deleting ' from string
     size_t n;
     do
     {
@@ -59,6 +64,7 @@ QStringList UserPanel::loadingCategories(QString& cat)
     }
     while(n != std::string::npos);
 
+    // append every word into list of categories
     QStringList list;
     std::string goal = ",";
     int commaPos;
@@ -80,7 +86,7 @@ QStringList UserPanel::loadingCategories(QString& cat)
     while(commaPos >= 0);
 
     list.append(temp.substr(prevPos,temp.length()).c_str());
-    qDebug() << list;
+
     return list;
 }
 

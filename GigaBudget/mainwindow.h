@@ -23,10 +23,12 @@ public:
     ~MainWindow();
 
     void userPanelLoginLoad();
-    void userPanelLoad();
+    void addingCategoriesItems();
 
     int returnPageIndex() const {return ui->stackedWidget->currentIndex();};
-    void setDefaultPageIndex() { ui->stackedWidget->setCurrentIndex(0);};
+    void setDefaultPageIndex();
+
+
 
 
 private:
@@ -35,8 +37,9 @@ private:
     UserPanel* up;
     QStackedWidget *stackedWidget;
 
-public slots:
+private slots:
     void login();
-
+    void on_buttonExpenses_clicked();
+    void on_buttonIncomes_clicked();
 };
 #endif // MAINWINDOW_H

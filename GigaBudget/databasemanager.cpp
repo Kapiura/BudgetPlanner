@@ -3,6 +3,9 @@
 #include <QDebug>
 #include <QtSql/QSqlDatabase>
 
+QString DatabaseManager::currentUsername = "Dupa";
+int DatabaseManager::userId = 0;
+
 DatabaseManager::DatabaseManager(QObject *parent)
    : QObject{parent}
 {
@@ -27,6 +30,7 @@ DatabaseManager::DatabaseManager(const QString &dbName, const QString &userName,
     {
         qDebug() << "Connecting to database went well, database name: " << _dbName;
     }
+
 }
 
 DatabaseManager::~DatabaseManager()
@@ -40,6 +44,27 @@ QSqlQuery DatabaseManager::returnQuery(const QString& query)
     return tempQuery;
 }
 
-QString DatabaseManager::currentUsername = "Dupa";
-int DatabaseManager::userId = 0;
+void DatabaseManager::addExpenses(int& id, double& amount, QString& currency, QString& category, QString& desc)
+{
+    QString queryString = QString("INSERT INTO expenses (u_id, amount, currency, date, description, category) "
+                                  "VALUES (%1, %2, '%3', NOW(), '%4', '%5')")
+                              .arg(id)
+                              .arg(amount)
+                              .arg(currency)
+                              .arg(desc)
+                              .arg(category);
+    QSqlQuery query(queryString,db);
+}
+
+void DatabaseManager::addIncomes(int& id, double& amount, QString& currency, QString& category, QString& desc)
+{
+    QString queryString = QString("INSERT INTO incomes (u_id, amount, currency, date, description, category) "
+                                  "VALUES (%1, %2, '%3', NOW(), '%4', '%5')")
+                              .arg(id)
+                              .arg(amount)
+                              .arg(currency)
+                              .arg(desc)
+                              .arg(category);
+    QSqlQuery query(queryString,db);
+}
 

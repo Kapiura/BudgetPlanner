@@ -61,7 +61,7 @@
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QTabWidget" name="tabWidget">
+         <widget class="QTabWidget" name="paneluserTabs">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -75,11 +75,16 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <property name="tabBarAutoHide">
            <bool>false</bool>
           </property>
+          <widget class="QWidget" name="tab_5">
+           <attribute name="title">
+            <string>Summary</string>
+           </attribute>
+          </widget>
           <widget class="QWidget" name="expesnes">
            <attribute name="title">
             <string>Expenses</string>
@@ -105,7 +110,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="amount"/>
+                <widget class="QDoubleSpinBox" name="amountExpenses"/>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_19">
@@ -115,7 +120,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QComboBox" name="currency">
+                <widget class="QComboBox" name="currencyExpenses">
                  <item>
                   <property name="text">
                    <string>PLN</string>
@@ -136,7 +141,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QComboBox" name="category_expenses"/>
+                <widget class="QComboBox" name="categoryExpenses"/>
                </item>
                <item row="3" column="0">
                 <widget class="QLabel" name="label_21">
@@ -146,10 +151,10 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="desc"/>
+                <widget class="QLineEdit" name="descExpenses"/>
                </item>
                <item row="4" column="1">
-                <widget class="QPushButton" name="addButton">
+                <widget class="QPushButton" name="buttonExpenses">
                  <property name="text">
                   <string>Add</string>
                  </property>
@@ -188,7 +193,7 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+                <widget class="QDoubleSpinBox" name="amountIncomes"/>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_8">
@@ -198,7 +203,7 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QComboBox" name="comboBox_3"/>
+                <widget class="QComboBox" name="currencyIncomes"/>
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_7">
@@ -208,7 +213,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QComboBox" name="category_incomes"/>
+                <widget class="QComboBox" name="categoryIncomes"/>
                </item>
                <item row="3" column="0">
                 <widget class="QLabel" name="label_9">
@@ -218,10 +223,10 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLineEdit" name="lineEdit_2"/>
+                <widget class="QLineEdit" name="descIncomes"/>
                </item>
                <item row="4" column="1">
-                <widget class="QPushButton" name="pushButton_2">
+                <widget class="QPushButton" name="buttonIncomes">
                  <property name="text">
                   <string>Add</string>
                  </property>
