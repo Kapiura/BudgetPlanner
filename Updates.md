@@ -1,5 +1,30 @@
 # Updates of app
 
+
+## Aktualizacja 3
+
+### Dodanie zakładek do głównego panelu
+- Dodano zakładki do głównego panelu: logowanie oraz tworzenie użytkownika.
+- Po zalogowaniu użytkownika przenosi się do głównego panelu, gdzie znajdują się zakładki: 
+    - Expenses
+    - Incomes
+    - Savings Goals
+    - User Settings
+    - Settings
+
+### Formularze Expenses i Incomes
+- W zakładce "Expenses" oraz "Incomes" znajduje się prosty formularz, który jeszcze nie przesyła zapytania do bazy danych, ale zawiera pola:
+    - Amount
+    - Currency
+    - Category
+    - Description
+    - Przycisk "Add"
+
+### Dynamiczne dodawanie kategorii
+- W kategorii dynamicznie dodają się kategorie z bazy danych.
+
+---
+
 ## Aktualizacja 2
 
 - **Baza danych**
@@ -13,6 +38,7 @@
     - Przycisk logowania dziala i loguje w pewnym sensie uzytkownika
     - poprawne łączenie z baza danych
 
+---
 
 ## Aktualizacja 1
 
