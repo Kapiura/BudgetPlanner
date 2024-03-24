@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSqlQuery>
+#include <databasemanager.h>
 
 class Mainwindow;
 
@@ -19,10 +20,11 @@ public:
     void creatingLoginPanel(QSqlQuery& query);
     //void creatingLoginPanel(QStringList& userList);
     QWidget* creatingLoginPanel(QStringList& userList);
-    QWidget* creatingLoginPanel(QMap<QString, int>& users);
+    QWidget* creatingLoginPanel(QMap<QString, int>& users, DatabaseManager* db);
     QWidget* returnGridLaylout() {return _loginPanel;};
 
     QStringList loadingCategories(QString& cat);
+    // QList<QStringList> loadingTableExpenses();
 
 
 

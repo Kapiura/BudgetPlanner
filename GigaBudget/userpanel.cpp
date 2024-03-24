@@ -14,7 +14,7 @@ UserPanel::~UserPanel()
 }
 
 
-QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
+QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users, DatabaseManager* db)
 {
     // created new layot
     QVBoxLayout* layout = new QVBoxLayout;
@@ -22,7 +22,7 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
     for (auto [key, value]: users.asKeyValueRange())
     {
         QString username = key;
-        unsigned int id = value;
+        int id = value;
         QWidget* userPanel = new QWidget;
         QVBoxLayout* userLayout = new QVBoxLayout;
         QPushButton* loginButton = new QPushButton("Login");
@@ -36,8 +36,9 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
         // button changes current username and user id
         connect(loginButton, &QPushButton::clicked,  [=] ()
                 {
-                    DatabaseManager::currentUsername = username;
                     DatabaseManager::userId = id;
+                    DatabaseManager::currentUsername = username;
+                    // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
                     emit login();
                 });
     }
@@ -89,4 +90,9 @@ QStringList UserPanel::loadingCategories(QString& cat)
 
     return list;
 }
+
+// QList<QStringList> UserPanel::loadingTableExpenses()
+// {
+
+// }
 

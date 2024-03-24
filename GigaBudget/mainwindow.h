@@ -20,15 +20,24 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    // MainWindow(DatabaseManager* db = , QWidget *parent = nullptr);
     ~MainWindow();
 
     void userPanelLoginLoad();
     void addingCategoriesItems();
+    void addingExpensesTables();
 
     int returnPageIndex() const {return ui->stackedWidget->currentIndex();};
     void setDefaultPageIndex();
 
+    void listExpenses();
+    void listIncomes();
 
+    void loadDatabase(DatabaseManager* db);
+
+    DatabaseManager* returnDb() {return dbHandler;};
+
+    bool returnSuccess(){return userLoggedInSuccessfully;};
 
 
 private:
@@ -37,9 +46,15 @@ private:
     UserPanel* up;
     QStackedWidget *stackedWidget;
 
+    bool userLoggedInSuccessfully = false;
+
+    int userId;
+
 private slots:
     void login();
     void on_buttonExpenses_clicked();
     void on_buttonIncomes_clicked();
+    void on_btnCreateUser_clicked();
+    void on_buttonLogout_clicked();
 };
 #endif // MAINWINDOW_H

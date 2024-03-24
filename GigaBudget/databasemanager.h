@@ -10,15 +10,16 @@ class DatabaseManager : public QObject
 {
     Q_OBJECT
 public:
+
     // constructor
     explicit DatabaseManager(QObject* parent = nullptr);
-    DatabaseManager(const DatabaseManager &) = delete;
-    DatabaseManager(DatabaseManager &&) = delete;
-    DatabaseManager &operator=(const DatabaseManager &) = delete;
-    DatabaseManager &operator=(DatabaseManager &&) = delete;
     DatabaseManager(const QString &dbName, const QString &userName,
                     const QString &password, const QString &host,
                     const int &port);
+
+    static int getUserId();
+    static QString getCurrentUsername();
+
     ~DatabaseManager();
 
     QSqlQuery returnQuery(const QString& query);
@@ -28,9 +29,14 @@ public:
     void addExpenses(int& id, double& amount, QString& currency, QString& category, QString& desc);
     void addIncomes(int& id, double& amount, QString& currency, QString& category, QString& desc);
 
+    // user
+    void addUser(QString& name, QString& desc);
+
     // current user variables
-    static QString currentUsername;
+    // current user variables
     static int userId;
+    static QString currentUsername;
+
 
 private:
     QSqlDatabase db;

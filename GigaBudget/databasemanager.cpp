@@ -3,8 +3,27 @@
 #include <QDebug>
 #include <QtSql/QSqlDatabase>
 
-QString DatabaseManager::currentUsername = "Dupa";
-int DatabaseManager::userId = 0;
+ // DatabaseManager::currentUsername = "";
+ // DatabaseManager::userId = 0;
+// QString DatabaseManager::getCurrentUsername() = "example_username";
+// int DatabaseManager::getUserId() = 123;
+ // QString DatabaseManager::currentUsername = "";
+ // DatabaseManager::getUserId = 0;
+ // int DatabaseManager::userId = 0;
+
+ int DatabaseManager::userId = 0;
+ QString DatabaseManager::currentUsername = "";
+
+ int DatabaseManager::getUserId()
+ {
+     return userId;
+ }
+
+ QString DatabaseManager::getCurrentUsername()
+ {
+     return currentUsername;
+ }
+
 
 DatabaseManager::DatabaseManager(QObject *parent)
    : QObject{parent}
@@ -65,6 +84,15 @@ void DatabaseManager::addIncomes(int& id, double& amount, QString& currency, QSt
                               .arg(currency)
                               .arg(desc)
                               .arg(category);
+    QSqlQuery query(queryString,db);
+}
+
+void DatabaseManager::addUser(QString &name, QString &desc)
+{
+    QString queryString = QString("INSERT INTO users (name,description) "
+                                  "VALUES ('%1', '%2')")
+                              .arg(name)
+                              .arg(desc);
     QSqlQuery query(queryString,db);
 }
 
