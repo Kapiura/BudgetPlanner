@@ -1,5 +1,25 @@
 # Updates of app
 
+---
+
+## Aktualizacja 4 
+
+- **Baza danych**
+    - Dodano obsługę tabeli rekordów savings
+    - Zaimplementowano funkcjonalność dodawania rekordów do tabeli savings
+    - Dodano obsługę tabeli goals
+    - Zaimplementowano funkcjonalność dodawania rekordów do tabeli goals
+
+- **Panel użytkownika**
+    - Dodano wyświetlanie tabelki z rekordami savings
+    - Zaimplementowano dynamiczne dodawanie opcji do comboboxa w savings
+    - Dodano możliwość tworzenia nowych użytkowników
+    - Zaimplementowano funkcję wylogowywania oraz wyboru innego użytkownika z listy
+    - Dodano miejsce na podsumowanie wydatków
+    - Dodano miejsce na ustawienia
+    - Dodano tekst powitalny użytkownika z jego nazwą użytkownika
+
+---
 
 ## Aktualizacja 3
 
