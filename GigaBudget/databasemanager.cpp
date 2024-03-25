@@ -3,14 +3,6 @@
 #include <QDebug>
 #include <QtSql/QSqlDatabase>
 
- // DatabaseManager::currentUsername = "";
- // DatabaseManager::userId = 0;
-// QString DatabaseManager::getCurrentUsername() = "example_username";
-// int DatabaseManager::getUserId() = 123;
- // QString DatabaseManager::currentUsername = "";
- // DatabaseManager::getUserId = 0;
- // int DatabaseManager::userId = 0;
-
  int DatabaseManager::userId = 0;
  QString DatabaseManager::currentUsername = "";
 
@@ -23,7 +15,6 @@
  {
      return currentUsername;
  }
-
 
 DatabaseManager::DatabaseManager(QObject *parent)
    : QObject{parent}
@@ -94,5 +85,36 @@ void DatabaseManager::addUser(QString &name, QString &desc)
                               .arg(name)
                               .arg(desc);
     QSqlQuery query(queryString,db);
+}
+
+void DatabaseManager::addGoal(QString &title, double &amount, QString &currency, QString &desc)
+{
+
+
+    QString queryString = QString("insert into goal (title, goal_amount, current_amount, currency, description, u_id) values('%1', %2, 0, '%3', '%4', %5);")
+                              .arg(title)
+                              .arg(amount)
+                              .arg(currency)
+                              .arg(desc)
+                              .arg(DatabaseManager::userId);
+    QSqlQuery query(queryString,db);
+}
+
+void DatabaseManager::addSav(QString &title, double &amount, QString &currency, QString &desc)
+{
+    QString queryString = QString("SELECT idg FROM goal WHERE title = '%1'").arg(title);
+    QSqlQuery query(queryString,db);
+    if (query.next()) {
+        int g_id = query.value(0).toInt();
+        queryString = QString("INSERT INTO savings (u_id, g_id, amount, currency, date, description) "
+                              "VALUES (%1, %2, %3, '%4', NOW(),'%5')")
+                          .arg(DatabaseManager::userId)
+                          .arg(g_id)
+                          .arg(amount)
+                          .arg(currency)
+                          .arg(desc);
+        query.prepare(queryString);
+        query.exec();
+    }
 }
 

@@ -31,6 +31,8 @@ public:
 
     // user
     void addUser(QString& name, QString& desc);
+    void addGoal(QString& title,double& amount,QString& currency, QString& desc);
+    void addSav(QString& title,double& amount,QString& currency,QString& desc);
 
     // current user variables
     // current user variables
