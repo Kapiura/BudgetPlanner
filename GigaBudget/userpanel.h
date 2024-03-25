@@ -21,6 +21,7 @@ public:
     //void creatingLoginPanel(QStringList& userList);
     QWidget* creatingLoginPanel(QStringList& userList);
     QWidget* creatingLoginPanel(QMap<QString, int>& users, DatabaseManager* db);
+    QWidget *creatingGoals();
     QWidget* returnGridLaylout() {return _loginPanel;};
 
     QStringList loadingCategories(QString& cat);
@@ -31,6 +32,7 @@ public:
 signals:
 private:
     QWidget* _loginPanel;
+    QWidget* _goals;
 signals:
     void login(); // Declare the signal here
 };

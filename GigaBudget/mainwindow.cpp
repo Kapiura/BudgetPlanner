@@ -7,7 +7,6 @@
 #include <QMap>
 #include <QStandardItem>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -27,7 +26,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::userPanelLoginLoad()
 {
     QString queryString = "SELECT name, idu FROM users;";
@@ -42,6 +40,7 @@ void MainWindow::userPanelLoginLoad()
     qDebug() << dbHandler->getUserId() << " " << dbHandler->getCurrentUsername();
     ui->tabWidget_2->setCurrentIndex(0);
     ui->users->addWidget(gl);
+    this->show();
 }
 
 void MainWindow::login()
@@ -50,6 +49,9 @@ void MainWindow::login()
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     userId = DatabaseManager::userId;
     userLoggedInSuccessfully = true;
+    this->listIncomes();
+    this->listExpenses();
+    this->show();
 }
 
 void MainWindow::addingCategoriesItems()
@@ -74,14 +76,15 @@ void MainWindow::addingCategoriesItems()
         qDebug() << temp;
         ui->categoryIncomes->addItems(up->loadingCategories(temp));
     }
+    this->show();
 }
 
 void MainWindow::setDefaultPageIndex()
 {
     ui->paneluserTabs->setCurrentIndex(0);
     ui->stackedWidget->setCurrentIndex(0);
+    this->show();
 };
-
 
 void MainWindow::on_buttonExpenses_clicked()
 {
@@ -92,6 +95,7 @@ void MainWindow::on_buttonExpenses_clicked()
     QString desc = ui->descExpenses->toPlainText();
     QString category = ui->categoryExpenses->currentText();
     dbHandler->addExpenses(id, amount, currency, category, desc);
+    this->show();
 }
 
 void MainWindow::on_buttonIncomes_clicked()
@@ -103,12 +107,14 @@ void MainWindow::on_buttonIncomes_clicked()
     QString desc = ui->descIncomes->toPlainText();
     QString category = ui->categoryIncomes->currentText();
     dbHandler->addIncomes(id, amount, currency, category, desc);
+    this->show();
 }
 
 void MainWindow::listExpenses()
 {
-    QString queryString = QString("SELECT amount, currency, category, date, description FROM expenses;");
+    QString queryString = QString("SELECT amount, currency, category, date, description FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
     qDebug() << "Id: " << dbHandler->getUserId();
+    qDebug() << queryString;
 
 
     QStringList headers = {"Amount", "Currency", "Category", "Date", "Description"};
@@ -119,7 +125,6 @@ void MainWindow::listExpenses()
     while(query.next())
     {
         QStringList tempList;
-            qDebug() << "yes " << DatabaseManager::userId;
             tempList.append(QString::number(query.value(0).toDouble()));
             tempList.append(query.value(1).toString());
             tempList.append(query.value(2).toString());
@@ -128,7 +133,7 @@ void MainWindow::listExpenses()
             list.append(tempList);
     }
 
-    QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size()); // Allocate on heap
+    QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
     model->setHorizontalHeaderLabels(headers);
 
     for (int row = 0; row < list.size(); ++row)
@@ -141,17 +146,52 @@ void MainWindow::listExpenses()
     }
 
     ui->tableExpenses->setModel(model);
+    this->show();
 }
-
 
 void MainWindow::listIncomes()
 {
+    QString queryString = QString("SELECT amount, currency, category, date, description FROM incomes;");
+    qDebug() << "Id: " << dbHandler->getUserId();
+
+
+    QStringList headers = {"Amount", "Currency", "Category", "Date", "Description"};
+
+    QSqlQuery query(queryString, dbHandler->returnDataBase());
+    QList<QStringList> list;
+
+    while(query.next())
+    {
+        QStringList tempList;
+        tempList.append(QString::number(query.value(0).toDouble()));
+        tempList.append(query.value(1).toString());
+        tempList.append(query.value(2).toString());
+        tempList.append(query.value(3).toString());
+        tempList.append(query.value(4).toString());
+        list.append(tempList);
+    }
+
+    QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
+    model->setHorizontalHeaderLabels(headers);
+
+    for (int row = 0; row < list.size(); ++row)
+    {
+        for (int column = 0; column < list[row].size(); ++column)
+        {
+            QModelIndex index = model->index(row, column, QModelIndex());
+            model->setData(index, list[row][column]);
+        }
+    }
+
+    ui->tableIncomes->setModel(model);
+    this->show();
 
 }
 
 void MainWindow::loadDatabase(DatabaseManager* db)
 {
     this->dbHandler = db;
+    this->show();
 }
 
 void MainWindow::on_buttonLogout_clicked()
@@ -159,24 +199,27 @@ void MainWindow::on_buttonLogout_clicked()
     DatabaseManager::userId = 0;
     DatabaseManager::currentUsername = "";
     this->setDefaultPageIndex();
+    this->show();
 }
-
 
 void MainWindow::on_btnCreateUser_clicked()
 {
     userLoggedInSuccessfully = false;
+
     QString username = ui->newUsername->text();
     QString desc = ui->newDesc->toPlainText();
+
     dbHandler->addUser(username, desc);
-    if (ui->users) {
-        QLayoutItem *item;
-        while ((item = ui->users->takeAt(0)) != nullptr) {
-            if (QWidget *widget = item->widget()) {
-                widget->deleteLater();
-            }
-            delete item;
-        }
+
+    QLayout* layout = ui->users->layout();
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        layout->removeItem(item);
+        delete item->widget();
+        delete item;
     }
+
+
 
     this->userPanelLoginLoad();
 }

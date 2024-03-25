@@ -46,6 +46,38 @@ QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users, DatabaseManage
     return _loginPanel;
 }
 
+QWidget *UserPanel::creatingGoals()
+{
+    // created new layot
+    QVBoxLayout* layout = new QVBoxLayout;
+    QString queryString = "SELECT goal_amount";
+    // for (auto [key, value]: users.asKeyValueRange())
+    // {
+    //     QString username = key;
+    //     int id = value;
+    //     QWidget* userPanel = new QWidget;
+    //     QVBoxLayout* userLayout = new QVBoxLayout;
+    //     QPushButton* loginButton = new QPushButton("Login");
+    //     QLabel* usernameLabel = new QLabel(username);
+    //     userLayout->addWidget(usernameLabel);
+    //     userLayout->addWidget(loginButton);
+
+    //     userPanel->setLayout(userLayout);
+    //     layout->addWidget(userPanel);
+
+    //     // button changes current username and user id
+    //     connect(loginButton, &QPushButton::clicked,  [=] ()
+    //             {
+    //                 DatabaseManager::userId = id;
+    //                 DatabaseManager::currentUsername = username;
+    //                 // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
+    //                 emit login();
+    //             });
+    // }
+    _goals->setLayout(layout);
+    return _goals;
+}
+
 QStringList UserPanel::loadingCategories(QString& cat)
 {
     // deleting enum word and ()
