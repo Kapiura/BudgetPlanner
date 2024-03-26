@@ -116,7 +116,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>4</number>
           </property>
           <property name="tabBarAutoHide">
            <bool>false</bool>
@@ -162,7 +162,11 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="amountExpenses"/>
+                <widget class="QDoubleSpinBox" name="amountExpenses">
+                 <property name="maximum">
+                  <double>100000000000000004384584304507619735463404765184.000000000000000</double>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_19">
@@ -242,7 +246,11 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="amountIncomes"/>
+                <widget class="QDoubleSpinBox" name="amountIncomes">
+                 <property name="maximum">
+                  <double>10000000000000000139372116959414099130712064.000000000000000</double>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_8">
@@ -322,7 +330,11 @@
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="savingsAmount"/>
+                <widget class="QDoubleSpinBox" name="savingsAmount">
+                 <property name="maximum">
+                  <double>1000000000000000019884624838656.000000000000000</double>
+                 </property>
+                </widget>
                </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_11">
@@ -406,7 +418,11 @@
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="goalAmount"/>
+                <widget class="QDoubleSpinBox" name="goalAmount">
+                 <property name="maximum">
+                  <double>99999999999999997168788049560464200849936328366177157906432.000000000000000</double>
+                 </property>
+                </widget>
                </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_22">

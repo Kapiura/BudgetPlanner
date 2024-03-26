@@ -7,6 +7,9 @@
 #include <QMap>
 #include <QStandardItem>
 
+// -----------------------------------------
+// CONSTRUCORS & DESCRUCTORS
+// -----------------------------------------
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -27,7 +30,13 @@ MainWindow::~MainWindow()
     delete ui->users;
     delete ui;
 }
+// -----------------------------------------
+// -----------------------------------------
 
+
+// -----------------------------------------
+// LOADING USERS, EXPENSES, INCOMES  etc.
+// -----------------------------------------
 void MainWindow::userPanelLoginLoad()
 {
     // Query -  loading users and displaying them
@@ -49,6 +58,7 @@ void MainWindow::userPanelLoginLoad()
     ui->users->addWidget(gl);
 }
 
+// loggin into account - loading all the things
 void MainWindow::login()
 {
     // changing to page number 2
@@ -76,6 +86,7 @@ void MainWindow::addingCategoriesItems()
     // exec the query
     QSqlQuery query(queryString, dbHandler->returnDataBase());
     // adding items to combo box
+    ui->categoryExpenses->clear();
     while(query.next())
     {
         QString temp = query.value(0).toString();
@@ -89,6 +100,7 @@ void MainWindow::addingCategoriesItems()
     // executing new query
     query.exec();
     // adding items to combo box
+    ui->categoryIncomes->clear();
     while(query.next())
     {
         QString temp = query.value(0).toString();
@@ -99,7 +111,7 @@ void MainWindow::addingCategoriesItems()
     query.prepare(queryString);
     query.exec();
     QStringList temp;
-
+    ui->savingsGoal->clear();
     while(query.next())
     {
         QString temp = query.value(0).toString();
@@ -107,38 +119,6 @@ void MainWindow::addingCategoriesItems()
         ui->savingsGoal->addItem(temp);
     }
 
-}
-
-void MainWindow::setDefaultPageIndex()
-{
-    // setting defualts indexes
-    ui->tabWidget_2->setCurrentIndex(0);
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->paneluserTabs->setCurrentIndex(0);
-};
-
-void MainWindow::on_buttonExpenses_clicked()
-{
-    // variables of expenses
-    int id = dbHandler->getUserId();
-    double amount = ui->amountExpenses->value();
-    QString currency = ui->currencyExpenses->currentText();
-    QString desc = ui->descExpenses->toPlainText();
-    QString category = ui->categoryExpenses->currentText();
-    // making a query - adding record to table expenses
-    dbHandler->addExpenses(id, amount, currency, category, desc);
-}
-
-void MainWindow::on_buttonIncomes_clicked()
-{
-    // variables of incomes
-    int id = dbHandler->getUserId();
-    double amount = ui->amountIncomes->value();
-    QString currency = ui->currencyIncomes->currentText();
-    QString desc = ui->descIncomes->toPlainText();
-    QString category = ui->categoryIncomes->currentText();
-    // making a query -  adding record to table incomes
-    dbHandler->addIncomes(id, amount, currency, category, desc);
 }
 
 // listing Expenses, Incomes, Savings
@@ -209,7 +189,50 @@ void MainWindow::listSav(QString &queryString, QTableView* table)
     // displaying model
     table->setModel(model);
 }
+// -----------------------------------------
+// -----------------------------------------
 
+
+void MainWindow::setDefaultPageIndex()
+{
+    // setting defualts indexes
+    ui->tabWidget_2->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->paneluserTabs->setCurrentIndex(0);
+};
+
+
+// -----------------------------------------
+// TRIGGER BUTTONS
+// -----------------------------------------
+
+void MainWindow::on_goalAdd_clicked()
+{
+    // getting things
+    QString title = ui->goalTitle->text();
+    double amount = ui->goalAmount->value();
+    QString currency = ui->goalCurrency->currentText();
+    QString desc = ui->goalDesc->toPlainText();
+    qDebug() << title << amount << currency << desc;
+    dbHandler->addGoal(title, amount, currency, desc);
+
+    this->addingCategoriesItems();
+}
+
+
+void MainWindow::on_savingsButton_clicked()
+{
+    // getting things
+    QString title = ui->savingsGoal->currentText();
+    double amount = ui->savingsAmount->value();
+    QString currency = ui->savingsCurrency->currentText();
+    QString desc = ui->savingsDesc->toPlainText();
+    dbHandler->addSav(title, amount, currency, desc);
+    // qDebug() << title;
+
+    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
+    this->listSav(querySav, ui->tableSav);
+}
 
 void MainWindow::on_buttonLogout_clicked()
 {
@@ -230,29 +253,46 @@ void MainWindow::on_btnCreateUser_clicked()
     QString desc = ui->newDesc->toPlainText();
     // adding user to database
     dbHandler->addUser(username, desc);
+
+    // while( QLayoutItem* item = ui->users->layout()->takeAt(0) )
+    // {
+    //     item->widget()->setVisible(false);
+    //     ui->users->layout()->removeItem(item);
+    // }
+
+    this->userPanelLoginLoad();
+    this->setDefaultPageIndex();
 }
 
-
-void MainWindow::on_goalAdd_clicked()
+void MainWindow::on_buttonIncomes_clicked()
 {
-    // getting things
-    QString title = ui->goalTitle->text();
-    double amount = ui->goalAmount->decimals();
-    QString currency = ui->goalCurrency->currentText();
-    QString desc = ui->goalDesc->toPlainText();
-    qDebug() << title << amount << currency << desc;
-    dbHandler->addGoal(title, amount, currency, desc);
+    // variables of incomes
+    int id = dbHandler->getUserId();
+    double amount = ui->amountIncomes->value();
+    QString currency = ui->currencyIncomes->currentText();
+    QString desc = ui->descIncomes->toPlainText();
+    QString category = ui->categoryIncomes->currentText();
+    // making a query -  adding record to table incomes
+    dbHandler->addIncomes(id, amount, currency, category, desc);
+
+    QString queryIn = QString("SELECT amount, currency, category, date, description FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
+    this->listExIn(queryIn, ui->tableIncomes);
 }
 
-
-void MainWindow::on_savingsButton_clicked()
+void MainWindow::on_buttonExpenses_clicked()
 {
-    // getting things
-    QString title = ui->savingsGoal->currentText();
-    double amount = ui->savingsAmount->decimals();
-    QString currency = ui->savingsCurrency->currentText();
-    QString desc = ui->savingsDesc->toPlainText();
-    dbHandler->addSav(title, amount, currency, desc);
-    // qDebug() << title;
-}
+    // variables of expenses
+    int id = dbHandler->getUserId();
+    double amount = ui->amountExpenses->value();
+    QString currency = ui->currencyExpenses->currentText();
+    QString desc = ui->descExpenses->toPlainText();
+    QString category = ui->categoryExpenses->currentText();
+    // making a query - adding record to table expenses
+    dbHandler->addExpenses(id, amount, currency, category, desc);
 
+    QString queryEx = QString("SELECT amount, currency, category, date, description FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
+    this->listExIn(queryEx, ui->tableExpenses);
+
+}
+// -----------------------------------------
+// -----------------------------------------
