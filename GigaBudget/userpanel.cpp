@@ -1,6 +1,8 @@
 #include "userpanel.h"
 #include "databasemanager.h"
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+#include <QMap>
 
 UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
@@ -13,37 +15,49 @@ UserPanel::~UserPanel()
     delete _loginPanel;
 }
 
-
-QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
+class MainWindow;
+void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
 {
-    // created new layot
-    QVBoxLayout* layout = new QVBoxLayout;
-    // dynamically creating user login layot and adding it to the upper one
-    for (auto [key, value]: users.asKeyValueRange())
+    QString queryString = "SELECT name, idu FROM users;";
+    QSqlQuery query(db->returnDataBase());
+    query.prepare(queryString);
+    query.exec();
+    QMap<QString, int> users;
+    while(query.next())
     {
-        QString username = key;
-        int id = value;
-        QWidget* userPanel = new QWidget;
-        QVBoxLayout* userLayout = new QVBoxLayout;
-        QPushButton* loginButton = new QPushButton("Login");
-        QLabel* usernameLabel = new QLabel(username);
-        userLayout->addWidget(usernameLabel);
-        userLayout->addWidget(loginButton);
+        QString username = query.value(0).toString();
+        int id = query.value(1).toInt();
+        users.insert(username,id);
+    }
+    // mamy sobie mape z userami teraz mozna to przeksztalcic w wektor wigetow moze albo itemow
+    QVector<QWidget*> widgets;
+    for(auto [username,id]: users.asKeyValueRange())
+    {
+        QWidget* container = new QWidget;
+        QHBoxLayout* layout = new QHBoxLayout;
 
-        userPanel->setLayout(userLayout);
-        layout->addWidget(userPanel);
+        QLabel* label = new QLabel(username);
 
-        // button changes current username and user id
-        connect(loginButton, &QPushButton::clicked,  [=] ()
+        QPushButton* button = new QPushButton("Login");
+
+        layout->addWidget(label);
+        layout->addWidget(button);
+
+        container->setLayout(layout);
+        connect(button, &QPushButton::clicked,  [=] ()
                 {
                     DatabaseManager::userId = id;
                     DatabaseManager::currentUsername = username;
                     // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
                     emit login();
                 });
+        widgets.append(container);
     }
-    _loginPanel->setLayout(layout);
-    return _loginPanel;
+
+    for(auto& el: widgets)
+    {
+        lay->addWidget(el);
+    }
 }
 
 QWidget *UserPanel::creatingGoals()
@@ -123,8 +137,13 @@ QStringList UserPanel::loadingCategories(QString& cat)
     return list;
 }
 
-// QList<QStringList> UserPanel::loadingTableExpenses()
-// {
+void UserPanel::deleteUsersFromLoginPanel(QGridLayout* lay)
+{
+    QLayoutItem *item;
+    while ((item = lay->takeAt(0)) != nullptr) {
+        delete item->widget(); // Usuń widget z komórki (jeśli istnieje)
+        delete item; // Usuń element layoutu
+    }
+}
 
-// }
 

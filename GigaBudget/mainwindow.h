@@ -25,12 +25,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void userPanelLoginLoad();
     void addingCategoriesItems();
     void addingExpensesTables();
+    void setDefaultPageIndex();
 
     int returnPageIndex() const {return ui->stackedWidget->currentIndex();};
-    void setDefaultPageIndex();
 
     void listExIn(QString& queryString, QTableView* table);
     void listSav(QString &queryString, QTableView *table);

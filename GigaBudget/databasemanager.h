@@ -37,7 +37,6 @@ public:
     bool deleteData(QString& table);
 
     // current user variables
-    // current user variables
     static int userId;
     static QString currentUsername;
 

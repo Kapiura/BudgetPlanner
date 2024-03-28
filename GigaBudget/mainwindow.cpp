@@ -32,11 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 dialogWindow->reject();
             });
-    // dialogWindow->layout()->addWidget(userDelete);
-
     connect(up, &UserPanel::login, this, &MainWindow::login);
-    // connect(userDelete, &QDialogButtonBox::accepted, this, );
 
+    up->creatingLoginPanel(ui->users,dbHandler);
     this->setDefaultPageIndex();
 }
 
@@ -58,26 +56,6 @@ MainWindow::~MainWindow()
 // -----------------------------------------
 // LOADING USERS, EXPENSES, INCOMES  etc.
 // -----------------------------------------
-void MainWindow::userPanelLoginLoad()
-{
-    // Query -  loading users and displaying them
-    //          on user panel
-    QString queryString = "SELECT name, idu FROM users;";
-
-    // Executing a query
-    QSqlQuery query(queryString,dbHandler->returnDataBase());
-    // Map with username and their id
-    QMap<QString, int> users;
-    while(query.next())
-    {
-        QString username = query.value(0).toString();
-        users.insert(query.value(0).toString(), query.value(1).toInt());
-    }
-    // creating widget with users
-    QWidget* gl = up->creatingLoginPanel(users);
-    // adding widget to ui
-    ui->users->addWidget(gl);
-}
 
 // loggin into account - loading all the things
 void MainWindow::login()
@@ -86,8 +64,6 @@ void MainWindow::login()
     ui->stackedWidget->setCurrentIndex(1);
     // change value of welcoming text
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
-
-    // userLoggedInSuccessfully = true;
     // list incomes, expenses, goals, saving for chosen user
     QString queryEx = QString("SELECT amount, currency, category, date, description FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
     QString queryIn = QString("SELECT amount, currency, category, date, description FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
@@ -210,6 +186,7 @@ void MainWindow::listSav(QString &queryString, QTableView* table)
     // displaying model
     table->setModel(model);
 }
+
 // -----------------------------------------
 // -----------------------------------------
 
@@ -236,21 +213,17 @@ void MainWindow::on_goalAdd_clicked()
     QString desc = ui->goalDesc->toPlainText();
     qDebug() << title << amount << currency << desc;
     dbHandler->addGoal(title, amount, currency, desc);
-
     this->addingCategoriesItems();
 }
 
 
 void MainWindow::on_savingsButton_clicked()
 {
-    // getting things
     QString title = ui->savingsGoal->currentText();
     double amount = ui->savingsAmount->value();
     QString currency = ui->savingsCurrency->currentText();
     QString desc = ui->savingsDesc->toPlainText();
     dbHandler->addSav(title, amount, currency, desc);
-    // qDebug() << title;
-
     QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
     this->listSav(querySav, ui->tableSav);
 }
@@ -278,15 +251,11 @@ void MainWindow::on_btnCreateUser_clicked()
     {
         qDebug() << "User has been added succuessful";
         QVBoxLayout* layout = new QVBoxLayout;
-
-            QLabel* usernameLabel = new QLabel("DUPA");
-            layout->addWidget(usernameLabel);
-
-        messDialog->setLayout(layout);
-        messDialog->show();
-        // this->userPanelLoginLoad();
+        QLabel* usernameLabel = new QLabel("k");
+        layout->addWidget(usernameLabel);
         this->setDefaultPageIndex();
-        // TODO updading users list on logging panel
+        up->deleteUsersFromLoginPanel(ui->users);
+        up->creatingLoginPanel(ui->users,dbHandler);
     }
     else
     {
@@ -336,6 +305,8 @@ void MainWindow::on_pushButton_clicked()
         {
             qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
             this->setDefaultPageIndex();
+            up->deleteUsersFromLoginPanel(ui->users);
+            up->creatingLoginPanel(ui->users,dbHandler);
         }
         else
             qDebug() << "something gone wrong during deleting user";
