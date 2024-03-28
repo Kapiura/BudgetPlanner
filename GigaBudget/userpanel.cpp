@@ -14,7 +14,7 @@ UserPanel::~UserPanel()
 }
 
 
-QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users, DatabaseManager* db)
+QWidget* UserPanel::creatingLoginPanel(QMap<QString, int>& users)
 {
     // created new layot
     QVBoxLayout* layout = new QVBoxLayout;

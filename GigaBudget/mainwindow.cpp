@@ -53,7 +53,7 @@ void MainWindow::userPanelLoginLoad()
         users.insert(query.value(0).toString(), query.value(1).toInt());
     }
     // creating widget with users
-    QWidget* gl = up->creatingLoginPanel(users,dbHandler);
+    QWidget* gl = up->creatingLoginPanel(users);
     // adding widget to ui
     ui->users->addWidget(gl);
 }

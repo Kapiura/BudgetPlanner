@@ -20,7 +20,7 @@ public:
     void creatingLoginPanel(QSqlQuery& query);
     //void creatingLoginPanel(QStringList& userList);
     QWidget* creatingLoginPanel(QStringList& userList);
-    QWidget* creatingLoginPanel(QMap<QString, int>& users, DatabaseManager* db);
+    QWidget* creatingLoginPanel(QMap<QString, int>& users);
     QWidget *creatingGoals();
     QWidget* returnGridLaylout() {return _loginPanel;};
 
