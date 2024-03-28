@@ -30,7 +30,7 @@ public:
     void addIncomes(int& id, double& amount, QString& currency, QString& category, QString& desc);
 
     // user
-    void addUser(QString& name, QString& desc);
+    bool addUser(QString& name, QString& desc);
     void addGoal(QString& title,double& amount,QString& currency, QString& desc);
     void addSav(QString& title,double& amount,QString& currency,QString& desc);
     bool deleteUser();

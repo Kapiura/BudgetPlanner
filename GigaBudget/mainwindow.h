@@ -8,6 +8,8 @@
 #include <QtSql/QSqlQuery>
 #include <QStackedWidget>
 #include <QDialog>
+#include <QMessageBox>
+#include <QDialogButtonBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,15 +37,14 @@ public:
 
     DatabaseManager* returnDb() {return dbHandler;};
 
-
-public slots:
-
 private:
     Ui::MainWindow *ui;
     DatabaseManager* dbHandler;
     UserPanel* up;
     QStackedWidget *stackedWidget;
-    QDialog* userDelete;
+    QDialog* dialogWindow;
+    QDialogButtonBox* userDelete;
+    QMessageBox* messDialog;
 
 private slots:
     void login();

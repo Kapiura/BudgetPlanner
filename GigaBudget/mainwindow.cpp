@@ -6,6 +6,7 @@
 #include <QUiLoader>
 #include <QMap>
 #include <QStandardItem>
+#include <QDialogButtonBox>
 #include <QDialog>
 
 // -----------------------------------------
@@ -18,19 +19,32 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     dbHandler = new DatabaseManager("gigaBudget","root","!@#QWE123qwe","localhost",3306);
     up = new UserPanel();
-    connect(up, &UserPanel::login, this, &MainWindow::login);
+    messDialog = new QMessageBox();
 
-    userDelete = new QDialog();
+    dialogWindow = new QDialog();
+    userDelete = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dialogWindow);
+    connect(userDelete,&QDialogButtonBox::accepted, [=]()
+            {
+                dialogWindow->accept();
+
+            } );
+    connect(userDelete, &QDialogButtonBox::rejected, [=]()
+            {
+                dialogWindow->reject();
+            });
+    // dialogWindow->layout()->addWidget(userDelete);
+
+    connect(up, &UserPanel::login, this, &MainWindow::login);
+    // connect(userDelete, &QDialogButtonBox::accepted, this, );
 
     this->setDefaultPageIndex();
 }
 
 MainWindow::~MainWindow()
 {
-    if(userDelete)
-    {
-        delete userDelete;
-    }
+    delete userDelete;
+    delete dialogWindow;
+    delete messDialog;
     delete ui->tableExpenses->model();
     delete up;
     delete dbHandler;
@@ -255,20 +269,29 @@ void MainWindow::on_buttonLogout_clicked()
 
 void MainWindow::on_btnCreateUser_clicked()
 {
+
     // getting username and description
     QString username = ui->newUsername->text();
     QString desc = ui->newDesc->toPlainText();
     // adding user to database
-    dbHandler->addUser(username, desc);
+    if(dbHandler->addUser(username, desc))
+    {
+        qDebug() << "User has been added succuessful";
+        QVBoxLayout* layout = new QVBoxLayout;
 
-    // while( QLayoutItem* item = ui->users->layout()->takeAt(0) )
-    // {
-    //     item->widget()->setVisible(false);
-    //     ui->users->layout()->removeItem(item);
-    // }
+            QLabel* usernameLabel = new QLabel("DUPA");
+            layout->addWidget(usernameLabel);
 
-    this->userPanelLoginLoad();
-    this->setDefaultPageIndex();
+        messDialog->setLayout(layout);
+        messDialog->show();
+        // this->userPanelLoginLoad();
+        this->setDefaultPageIndex();
+        // TODO updading users list on logging panel
+    }
+    else
+    {
+        qDebug() << "Something gone wrong dayum";
+    }
 }
 
 void MainWindow::on_buttonIncomes_clicked()
@@ -304,20 +327,22 @@ void MainWindow::on_buttonExpenses_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    // userDelete->show();
-    // userDelete->setWindowTitle("Deleting user");
-    // QDialog* dialog = new QDialog();
-    // dialog->setWindowTitle(QString("Deletin user %1"). arg(DatabaseManager::userId));
-    // dialog->
-    // dialog->show();
-    // delete dialog;
-    if(dbHandler->deleteUser())
+
+    // dialogWindow->show();
+    if(dialogWindow->exec())
     {
-        qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
-        this->setDefaultPageIndex();
+        qDebug() << "deleting";
+        if(dbHandler->deleteUser())
+        {
+            qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
+            this->setDefaultPageIndex();
+        }
+        else
+            qDebug() << "something gone wrong during deleting user";
     }
     else
-        qDebug() << "something gone wrong during deleting user";
+        qDebug() << "Deleting stopped";
+
 }
 // -----------------------------------------
 // -----------------------------------------

@@ -78,19 +78,29 @@ void DatabaseManager::addIncomes(int& id, double& amount, QString& currency, QSt
     QSqlQuery query(queryString,db);
 }
 
-void DatabaseManager::addUser(QString &name, QString &desc)
+bool DatabaseManager::addUser(QString &name, QString &desc)
 {
     QString queryString = QString("INSERT INTO users (name,description) "
                                   "VALUES ('%1', '%2')")
                               .arg(name)
                               .arg(desc);
-    QSqlQuery query(queryString,db);
+    QSqlQuery query(db);
+    query.prepare(queryString);
+    if(query.exec())
+    {
+        qDebug() << "User has been created";
+        return true;
+    }
+    else
+    {
+        qDebug() << "Something gone wrong during adding new user";
+        qDebug() << query.lastError().text();
+        return false;
+    }
 }
 
 void DatabaseManager::addGoal(QString &title, double &amount, QString &currency, QString &desc)
 {
-
-
     QString queryString = QString("insert into goal (title, goal_amount, current_amount, currency, description, u_id) values('%1', %2, 0, '%3', '%4', %5);")
                               .arg(title)
                               .arg(amount)
@@ -129,9 +139,11 @@ bool DatabaseManager::deleteUser()
     }
     else
     {
-        QString tables[4] = {"goal","incomes","expenses","savings"};
+        qDebug() << "Deleting tables";
+        QString tables[4] = {"savings","incomes","expenses","goal"};
         for(auto& tab: tables)
         {
+            qDebug() << "Deleting " << tab;
             this->deleteData(tab);
         }
         if(query.exec())
