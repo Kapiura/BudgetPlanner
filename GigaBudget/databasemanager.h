@@ -33,6 +33,8 @@ public:
     void addUser(QString& name, QString& desc);
     void addGoal(QString& title,double& amount,QString& currency, QString& desc);
     void addSav(QString& title,double& amount,QString& currency,QString& desc);
+    bool deleteUser();
+    bool deleteData(QString& table);
 
     // current user variables
     // current user variables

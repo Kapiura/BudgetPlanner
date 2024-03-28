@@ -3,10 +3,11 @@
 
 #include "ui_mainwindow.h"
 #include <QMainWindow>
-#include <databasemanager.h>
-#include <userpanel.h>
+#include "databasemanager.h"
+#include "userpanel.h"
 #include <QtSql/QSqlQuery>
 #include <QStackedWidget>
+#include <QDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -42,6 +43,7 @@ private:
     DatabaseManager* dbHandler;
     UserPanel* up;
     QStackedWidget *stackedWidget;
+    QDialog* userDelete;
 
 private slots:
     void login();
@@ -51,5 +53,6 @@ private slots:
     void on_buttonLogout_clicked();
     void on_goalAdd_clicked();
     void on_savingsButton_clicked();
+    void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H

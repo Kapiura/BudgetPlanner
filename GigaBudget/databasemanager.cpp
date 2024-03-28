@@ -118,3 +118,51 @@ void DatabaseManager::addSav(QString &title, double &amount, QString &currency, 
     }
 }
 
+bool DatabaseManager::deleteUser()
+{
+    QString queryString = QString("DELETE FROM users WHERE idu = '%1'").arg(DatabaseManager::userId);
+    QSqlQuery query(db);
+    query.prepare(queryString);
+    if(query.exec())
+    {
+        return true;
+    }
+    else
+    {
+        QString tables[4] = {"goal","incomes","expenses","savings"};
+        for(auto& tab: tables)
+        {
+            this->deleteData(tab);
+        }
+        if(query.exec())
+        {
+            return true;
+        }
+        else
+        {
+            qDebug() << "Something gone wrong";
+            qDebug() << db.lastError().text();
+            return false;
+        }
+    }
+
+}
+
+bool DatabaseManager::deleteData(QString &table)
+{
+    QString queryString = QString("delete from %1 where u_id = %2").arg(table).arg(DatabaseManager::getUserId());
+    QSqlQuery query(db);
+    query.prepare(queryString);
+    if(query.exec())
+    {
+        qDebug() << "Table " << table << " has been deleted";
+        return true;
+    }
+    else
+    {
+        qDebug() << "Something gone wrong";
+        qDebug() << query.lastError().text();
+        return false;
+    }
+
+}

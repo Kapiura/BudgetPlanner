@@ -6,7 +6,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSqlQuery>
-#include <databasemanager.h>
+#include "databasemanager.h"
 
 class Mainwindow;
 

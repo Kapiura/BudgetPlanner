@@ -6,6 +6,7 @@
 #include <QUiLoader>
 #include <QMap>
 #include <QStandardItem>
+#include <QDialog>
 
 // -----------------------------------------
 // CONSTRUCORS & DESCRUCTORS
@@ -19,11 +20,17 @@ MainWindow::MainWindow(QWidget *parent)
     up = new UserPanel();
     connect(up, &UserPanel::login, this, &MainWindow::login);
 
+    userDelete = new QDialog();
+
     this->setDefaultPageIndex();
 }
 
 MainWindow::~MainWindow()
 {
+    if(userDelete)
+    {
+        delete userDelete;
+    }
     delete ui->tableExpenses->model();
     delete up;
     delete dbHandler;
@@ -294,5 +301,26 @@ void MainWindow::on_buttonExpenses_clicked()
     this->listExIn(queryEx, ui->tableExpenses);
 
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    // userDelete->show();
+    // userDelete->setWindowTitle("Deleting user");
+    // QDialog* dialog = new QDialog();
+    // dialog->setWindowTitle(QString("Deletin user %1"). arg(DatabaseManager::userId));
+    // dialog->
+    // dialog->show();
+    // delete dialog;
+    if(dbHandler->deleteUser())
+    {
+        qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
+        this->setDefaultPageIndex();
+    }
+    else
+        qDebug() << "something gone wrong during deleting user";
+}
 // -----------------------------------------
 // -----------------------------------------
+
+
+
