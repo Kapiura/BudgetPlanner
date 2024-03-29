@@ -71,8 +71,8 @@ void MainWindow::login()
     this->listExIn(queryEx, ui->tableExpenses);
     this->listExIn(queryIn, ui->tableIncomes);
     this->listSav(querySav, ui->tableSav);
+    up->deleteDynamicWidgets(ui->sumgoal);
     up->creatingGoals(ui->sumgoal,dbHandler);
-    // list goals
     this->addingCategoriesItems();
 }
 
@@ -215,6 +215,8 @@ void MainWindow::on_goalAdd_clicked()
     qDebug() << title << amount << currency << desc;
     dbHandler->addGoal(title, amount, currency, desc);
     this->addingCategoriesItems();
+    up->deleteDynamicWidgets(ui->sumgoal);
+    up->creatingGoals(ui->sumgoal,dbHandler);
 }
 
 
@@ -227,6 +229,8 @@ void MainWindow::on_savingsButton_clicked()
     dbHandler->addSav(title, amount, currency, desc);
     QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
     this->listSav(querySav, ui->tableSav);
+    up->deleteDynamicWidgets(ui->sumgoal);
+    up->creatingGoals(ui->sumgoal,dbHandler);
 }
 
 void MainWindow::on_buttonLogout_clicked()
@@ -255,7 +259,7 @@ void MainWindow::on_btnCreateUser_clicked()
         QLabel* usernameLabel = new QLabel("k");
         layout->addWidget(usernameLabel);
         this->setDefaultPageIndex();
-        up->deleteUsersFromLoginPanel(ui->users);
+        up->deleteDynamicWidgets(ui->users);
         up->creatingLoginPanel(ui->users,dbHandler);
     }
     else
@@ -306,7 +310,7 @@ void MainWindow::on_deleteButton_clicked()
         {
             qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
             this->setDefaultPageIndex();
-            up->deleteUsersFromLoginPanel(ui->users);
+            up->deleteDynamicWidgets(ui->users);
             up->creatingLoginPanel(ui->users,dbHandler);
         }
         else

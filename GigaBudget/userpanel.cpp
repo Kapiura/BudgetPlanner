@@ -48,7 +48,6 @@ void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
                 {
                     DatabaseManager::userId = id;
                     DatabaseManager::currentUsername = username;
-                    // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
                     emit login();
                 });
         widgets.append(container);
@@ -62,7 +61,7 @@ void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
 
 void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
 {
-    QString queryString = "select title, goal_amount, current_amount, currency, description from goal;";
+    QString queryString = QString("select title, goal_amount, current_amount, currency, description from goal where u_id LIKE %1;").arg(DatabaseManager::getUserId());
     QSqlQuery query(db->returnDataBase());
     query.prepare(queryString);
     query.exec();
@@ -73,7 +72,7 @@ void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
         double current_amount = query.value(2).toDouble();
         QString currency = query.value(3).toString();
         QString desc = query.value(4).toString();
-        QString amount = QString("1% / 2%").arg(current_amount).arg(goal_amount);
+        QString amount = QString("%1 / %2").arg(current_amount).arg(goal_amount);
 
 
         QWidget* container = new QWidget;
@@ -152,7 +151,7 @@ QStringList UserPanel::loadingCategories(QString& cat)
     return list;
 }
 
-void UserPanel::deleteUsersFromLoginPanel(QGridLayout* lay)
+void UserPanel::deleteDynamicWidgets(QGridLayout* lay)
 {
     QLayoutItem *item;
     while ((item = lay->takeAt(0)) != nullptr) {

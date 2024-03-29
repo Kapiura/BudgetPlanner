@@ -17,7 +17,7 @@ public:
     ~UserPanel();
 
     void creatingLoginPanel(QGridLayout* lay, DatabaseManager* db);
-    void deleteUsersFromLoginPanel(QGridLayout* lay);
+    void deleteDynamicWidgets(QGridLayout* lay);
 
     // void creatingGoals();
     void creatingGoals(QGridLayout* area, DatabaseManager* db);
