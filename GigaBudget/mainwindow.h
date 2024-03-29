@@ -54,5 +54,6 @@ private slots:
     void on_goalAdd_clicked();
     void on_savingsButton_clicked();
     void on_deleteButton_clicked();
+    void on_userSettingsChange_clicked();
 };
 #endif // MAINWINDOW_H

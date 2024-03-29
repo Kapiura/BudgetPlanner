@@ -74,6 +74,7 @@ void MainWindow::login()
     up->deleteDynamicWidgets(ui->sumgoal);
     up->creatingGoals(ui->sumgoal,dbHandler);
     this->addingCategoriesItems();
+    up->setUserSettings(dbHandler, ui->userSettingsUsername, ui->userSettingsDesc);
 }
 
 // adding items to comboboxes in expenses and incomes
@@ -324,4 +325,22 @@ void MainWindow::on_deleteButton_clicked()
 // -----------------------------------------
 
 
+
+
+void MainWindow::on_userSettingsChange_clicked()
+{
+    QString newName = ui->userSettingsUsername->text();
+    QString newDesc = ui->userSettingsDesc->toPlainText();
+    QString queryString = QString("Update users SET name='%1', description='%2' where idu = %3").arg(newName).arg(newDesc).arg(DatabaseManager::getUserId());
+    QSqlQuery query(dbHandler->returnDataBase());
+    query.prepare(queryString);
+    if(query.exec())
+        {
+        DatabaseManager::currentUsername = newName;
+        qDebug() << query.lastError().text();
+        up->deleteDynamicWidgets(ui->users);
+        up->creatingLoginPanel(ui->users,dbHandler);
+        ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
+    }
+}
 

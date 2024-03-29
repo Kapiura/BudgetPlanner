@@ -8,6 +8,8 @@
 #include <QSqlQuery>
 #include "databasemanager.h"
 #include <QScrollArea>
+#include <QLineEdit>
+#include <QTextEdit>
 
 class UserPanel : public QObject
 {
@@ -18,6 +20,7 @@ public:
 
     void creatingLoginPanel(QGridLayout* lay, DatabaseManager* db);
     void deleteDynamicWidgets(QGridLayout* lay);
+    void setUserSettings(DatabaseManager* db, QLineEdit* username, QTextEdit* desc);
 
     // void creatingGoals();
     void creatingGoals(QGridLayout* area, DatabaseManager* db);

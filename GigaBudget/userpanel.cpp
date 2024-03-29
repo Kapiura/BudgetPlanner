@@ -155,9 +155,29 @@ void UserPanel::deleteDynamicWidgets(QGridLayout* lay)
 {
     QLayoutItem *item;
     while ((item = lay->takeAt(0)) != nullptr) {
-        delete item->widget(); // Usuń widget z komórki (jeśli istnieje)
-        delete item; // Usuń element layoutu
+        delete item->widget();
+        delete item;
     }
+}
+
+void UserPanel::setUserSettings(DatabaseManager* db, QLineEdit* username, QTextEdit* desc)
+{
+    QString queryString = QString("SELECT name, description FROM users WHERE idu = %1").arg(DatabaseManager::getUserId());
+    QSqlQuery query(db->returnDataBase());
+    query.prepare(queryString);
+    if (query.exec()) {
+        if (query.next()) {
+            QString name = query.value(0).toString();
+            QString description = query.value(1).toString();
+            username->setText(name);
+            desc->setText(description);
+        } else {
+            qDebug() << "No rows returned from the query.";
+        }
+    } else {
+        qDebug() << "Query execution failed:" << query.lastError().text();
+    }
+
 }
 
 
