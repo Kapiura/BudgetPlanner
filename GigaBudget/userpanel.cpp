@@ -3,6 +3,7 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QMap>
+#include <QProgressBar>
 
 UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
@@ -29,7 +30,6 @@ void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
         int id = query.value(1).toInt();
         users.insert(username,id);
     }
-    // mamy sobie mape z userami teraz mozna to przeksztalcic w wektor wigetow moze albo itemow
     QVector<QWidget*> widgets;
     for(auto [username,id]: users.asKeyValueRange())
     {
@@ -60,36 +60,51 @@ void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
     }
 }
 
-QWidget *UserPanel::creatingGoals()
+void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
 {
-    // created new layot
-    QVBoxLayout* layout = new QVBoxLayout;
-    QString queryString = "SELECT goal_amount";
-    // for (auto [key, value]: users.asKeyValueRange())
-    // {
-    //     QString username = key;
-    //     int id = value;
-    //     QWidget* userPanel = new QWidget;
-    //     QVBoxLayout* userLayout = new QVBoxLayout;
-    //     QPushButton* loginButton = new QPushButton("Login");
-    //     QLabel* usernameLabel = new QLabel(username);
-    //     userLayout->addWidget(usernameLabel);
-    //     userLayout->addWidget(loginButton);
+    QString queryString = "select title, goal_amount, current_amount, currency, description from goal;";
+    QSqlQuery query(db->returnDataBase());
+    query.prepare(queryString);
+    query.exec();
+    while(query.next())
+    {
+        QString title = query.value(0).toString();
+        double goal_amount = query.value(1).toDouble();
+        double current_amount = query.value(2).toDouble();
+        QString currency = query.value(3).toString();
+        QString desc = query.value(4).toString();
+        QString amount = QString("1% / 2%").arg(current_amount).arg(goal_amount);
 
-    //     userPanel->setLayout(userLayout);
-    //     layout->addWidget(userPanel);
 
-    //     // button changes current username and user id
-    //     connect(loginButton, &QPushButton::clicked,  [=] ()
-    //             {
-    //                 DatabaseManager::userId = id;
-    //                 DatabaseManager::currentUsername = username;
-    //                 // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
-    //                 emit login();
-    //             });
-    // }
-    _goals->setLayout(layout);
-    return _goals;
+        QWidget* container = new QWidget;
+        QHBoxLayout* layout = new QHBoxLayout;
+
+        QLabel* labelTitle = new QLabel(title);
+        QLabel* labelDesc = new QLabel(desc);
+        QLabel* labelAmount = new QLabel(amount);
+
+        QProgressBar* amountBar = new QProgressBar;
+        amountBar->setOrientation(Qt::Horizontal);
+        amountBar->setRange(0,goal_amount);
+        amountBar->setValue(current_amount);
+
+
+        layout->addWidget(labelTitle);
+        layout->addWidget(labelDesc);
+        layout->addWidget(labelAmount);
+        layout->addWidget(amountBar);
+
+
+        container->setLayout(layout);
+        area->addWidget(container);
+        // connect(button, &QPushButton::clicked,  [=] ()
+        //         {
+        //             DatabaseManager::userId = id;
+        //             DatabaseManager::currentUsername = username;
+        //             // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
+        //             emit login();
+        //         });
+    }
 }
 
 QStringList UserPanel::loadingCategories(QString& cat)

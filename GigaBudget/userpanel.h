@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QSqlQuery>
 #include "databasemanager.h"
+#include <QScrollArea>
 
 class UserPanel : public QObject
 {
@@ -18,7 +19,8 @@ public:
     void creatingLoginPanel(QGridLayout* lay, DatabaseManager* db);
     void deleteUsersFromLoginPanel(QGridLayout* lay);
 
-    QWidget *creatingGoals();
+    // void creatingGoals();
+    void creatingGoals(QGridLayout* area, DatabaseManager* db);
     QWidget* returnGridLaylout() {return _loginPanel;};
 
     QStringList loadingCategories(QString& cat);

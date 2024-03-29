@@ -71,6 +71,7 @@ void MainWindow::login()
     this->listExIn(queryEx, ui->tableExpenses);
     this->listExIn(queryIn, ui->tableIncomes);
     this->listSav(querySav, ui->tableSav);
+    up->creatingGoals(ui->sumgoal,dbHandler);
     // list goals
     this->addingCategoriesItems();
 }
@@ -294,7 +295,7 @@ void MainWindow::on_buttonExpenses_clicked()
 
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_deleteButton_clicked()
 {
 
     // dialogWindow->show();
