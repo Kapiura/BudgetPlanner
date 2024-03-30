@@ -39,7 +39,7 @@ sudo ./run
 
 ## Aktualizacje
 
-Aktualizacje programu można znaleźć w pliku [updated.md](updated.md).
+Aktualizacje programu można znaleźć w pliku [Updates.md](Updates.md).
 
 ## Autor
 
