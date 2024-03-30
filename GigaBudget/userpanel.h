@@ -12,37 +12,43 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-class UserPanel : public QObject {
-  Q_OBJECT
-public:
-  explicit UserPanel(QObject *parent = nullptr);
-  ~UserPanel();
+class UserPanel : public QObject
+{
+    Q_OBJECT
+  public:
+    explicit UserPanel(QObject *parent = nullptr);
+    ~UserPanel();
 
-  enum Flag { Expenses, Incomes, Savings };
+    enum Flag
+    {
+        Expenses,
+        Incomes,
+        Savings
+    };
 
-  void creatingLoginPanel(QGridLayout *lay, DatabaseManager *db);
-  void deleteDynamicWidgets(QGridLayout *lay);
-  void setUserSettings(DatabaseManager *db, QLineEdit *username,
-                       QTextEdit *desc);
-  void listExIn(QString &queryString, QTableView *table,
-                DatabaseManager *dbHandler, Flag flaga);
-  bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler,
-                    QString &idName);
-  void currentBudget(QGridLayout *lay, DatabaseManager *db);
+    void creatingLoginPanel(QGridLayout *lay, DatabaseManager *db);
+    void deleteDynamicWidgets(QGridLayout *lay);
+    void setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc);
+    void listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga);
+    bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
+    void currentBudget(QGridLayout *lay, DatabaseManager *db);
 
-  // void creatingGoals();
-  void creatingGoals(QGridLayout *area, DatabaseManager *db);
-  QWidget *returnGridLaylout() { return _loginPanel; };
+    // void creatingGoals();
+    void creatingGoals(QGridLayout *area, DatabaseManager *db);
+    QWidget *returnGridLaylout()
+    {
+        return _loginPanel;
+    };
 
-  QStringList loadingCategories(QString &cat);
+    QStringList loadingCategories(QString &cat);
 
-private:
-  QWidget *_loginPanel;
-  QWidget *_goals;
+  private:
+    QWidget *_loginPanel;
+    QWidget *_goals;
 
-signals:
-  void login();
-  void reloadInExSavGo();
+  signals:
+    void login();
+    void reloadInExSavGo();
 };
 
 #endif // USERPANEL_H
