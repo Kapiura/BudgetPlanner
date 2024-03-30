@@ -64,6 +64,7 @@ void MainWindow::login()
     ui->stackedWidget->setCurrentIndex(1);
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     this->reloadInExSavGo();
+    this->dailyQuote();
 }
 
 void MainWindow::reloadInExSavGo()
@@ -161,9 +162,18 @@ void MainWindow::listSav(QString &queryString, QTableView* table)
 
 }
 
-// -----------------------------------------
-// -----------------------------------------
+void MainWindow::dailyQuote()
+{
+    int currentDay = QDate::currentDate().day();
+    QString queryString = QString("SELECT * from quotes where id=%1").arg(currentDay);
 
+    QSqlQuery query(queryString,dbHandler->returnDataBase());
+
+    QMessageBox msgBox;
+    if(query.next())
+    msgBox.setText(QString("Quote of the day:\n%1").arg(query.value(1).toString()));
+    msgBox.exec();
+}
 
 void MainWindow::setDefaultPageIndex()
 {

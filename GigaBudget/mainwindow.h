@@ -45,6 +45,8 @@ private:
     QDialogButtonBox* userDelete;
     QMessageBox* messDialog;
 
+    void dailyQuote();
+
 private slots:
     void login();
     void reloadInExSavGo();
