@@ -47,6 +47,7 @@ private:
 
 private slots:
     void login();
+    void reloadInExSavGo();
     void on_buttonExpenses_clicked();
     void on_buttonIncomes_clicked();
     void on_btnCreateUser_clicked();

@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
                 dialogWindow->reject();
             });
     connect(up, &UserPanel::login, this, &MainWindow::login);
+    connect(up, &UserPanel::reloadInExSavGo, this, &MainWindow::reloadInExSavGo);
 
     up->creatingLoginPanel(ui->users,dbHandler);
     this->setDefaultPageIndex();
@@ -65,16 +66,30 @@ void MainWindow::login()
     // change value of welcoming text
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     // list incomes, expenses, goals, saving for chosen user
-    QString queryEx = QString("SELECT amount, currency, category, date, description FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
-    QString queryIn = QString("SELECT amount, currency, category, date, description FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
-    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
-    this->listExIn(queryEx, ui->tableExpenses);
-    this->listExIn(queryIn, ui->tableIncomes);
-    this->listSav(querySav, ui->tableSav);
+    QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
+    QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
+    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
+
     up->deleteDynamicWidgets(ui->sumgoal);
+
+    up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
+    up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
     up->creatingGoals(ui->sumgoal,dbHandler);
-    this->addingCategoriesItems();
     up->setUserSettings(dbHandler, ui->userSettingsUsername, ui->userSettingsDesc);
+
+    this->addingCategoriesItems();
+    // this->listSav(querySav, ui->tableSav);
+    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
+}
+
+void MainWindow::reloadInExSavGo()
+{
+    QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
+    QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
+    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
+    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
 }
 
 // adding items to comboboxes in expenses and incomes
@@ -120,41 +135,6 @@ void MainWindow::addingCategoriesItems()
 
 }
 
-// listing Expenses, Incomes, Savings
-void MainWindow::listExIn(QString &queryString, QTableView* table)
-{
-    // headers for table
-    QStringList headers = {"Amount", "Currency", "Category", "Date", "Description"};
-    // making a query
-    QSqlQuery query(queryString, dbHandler->returnDataBase());
-    QList<QStringList> list;
-    // adding records to table
-    while(query.next())
-    {
-        QStringList tempList;
-        tempList.append(QString::number(query.value(0).toDouble()));
-        tempList.append(query.value(1).toString());
-        tempList.append(query.value(2).toString());
-        tempList.append(query.value(3).toString());
-        tempList.append(query.value(4).toString());
-        list.append(tempList);
-    }
-    // creating model of table
-    QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
-    model->setHorizontalHeaderLabels(headers);
-    // adding items to model
-    for (int row = 0; row < list.size(); ++row)
-    {
-        for (int column = 0; column < list[row].size(); ++column)
-        {
-            QModelIndex index = model->index(row, column, QModelIndex());
-            model->setData(index, list[row][column]);
-        }
-    }
-    // displaying model
-    table->setModel(model);
-}
-
 void MainWindow::listSav(QString &queryString, QTableView* table)
 {
     // headers for table
@@ -176,6 +156,7 @@ void MainWindow::listSav(QString &queryString, QTableView* table)
     // creating model of table
     QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
     model->setHorizontalHeaderLabels(headers);
+
     // adding items to model
     for (int row = 0; row < list.size(); ++row)
     {
@@ -185,8 +166,8 @@ void MainWindow::listSav(QString &queryString, QTableView* table)
             model->setData(index, list[row][column]);
         }
     }
-    // displaying model
     table->setModel(model);
+
 }
 
 // -----------------------------------------
@@ -228,8 +209,9 @@ void MainWindow::on_savingsButton_clicked()
     QString currency = ui->savingsCurrency->currentText();
     QString desc = ui->savingsDesc->toPlainText();
     dbHandler->addSav(title, amount, currency, desc);
-    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
-    this->listSav(querySav, ui->tableSav);
+    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
+    // this->listSav(querySav, ui->tableSav);
+    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
     up->deleteDynamicWidgets(ui->sumgoal);
     up->creatingGoals(ui->sumgoal,dbHandler);
 }
@@ -280,8 +262,8 @@ void MainWindow::on_buttonIncomes_clicked()
     // making a query -  adding record to table incomes
     dbHandler->addIncomes(id, amount, currency, category, desc);
 
-    QString queryIn = QString("SELECT amount, currency, category, date, description FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
-    this->listExIn(queryIn, ui->tableIncomes);
+    QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
 }
 
 void MainWindow::on_buttonExpenses_clicked()
@@ -295,8 +277,8 @@ void MainWindow::on_buttonExpenses_clicked()
     // making a query - adding record to table expenses
     dbHandler->addExpenses(id, amount, currency, category, desc);
 
-    QString queryEx = QString("SELECT amount, currency, category, date, description FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
-    this->listExIn(queryEx, ui->tableExpenses);
+    QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
 
 }
 

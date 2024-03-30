@@ -4,6 +4,7 @@
 #include <QtSql/QSqlQuery>
 #include <QMap>
 #include <QProgressBar>
+#include <QStandardItemModel>
 
 UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
@@ -121,7 +122,7 @@ QStringList UserPanel::loadingCategories(QString& cat)
     {
         n = temp.find("'");
         if(n != std::string::npos)
-        temp = temp.erase(n,1);
+            temp = temp.erase(n,1);
     }
     while(n != std::string::npos);
 
@@ -179,5 +180,146 @@ void UserPanel::setUserSettings(DatabaseManager* db, QLineEdit* username, QTextE
     }
 
 }
+
+void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga)
+{
+    switch (flaga)
+    {
+    case Expenses:
+    case Incomes:
+    {
+        QStringList headers = {"Amount", "Currency", "Category", "Date", "Description","Modify", "Delete"};
+        QSqlQuery query(queryString, dbHandler->returnDataBase());
+        QList<QStringList> list;
+        QVector<int> ides;
+        while(query.next())
+        {
+            QStringList tempList;
+            tempList.append(QString::number(query.value(0).toDouble()));
+            tempList.append(query.value(1).toString());
+            tempList.append(query.value(2).toString());
+            tempList.append(query.value(3).toString());
+            tempList.append(query.value(4).toString());
+            ides.append(query.value(5).toInt());
+            list.append(tempList);
+        }
+        QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
+        model->setHorizontalHeaderLabels(headers);
+        for (int row = 0; row < list.size(); ++row)
+        {
+            for (int column = 0; column < list[row].size(); ++column)
+            {
+                QModelIndex index = model->index(row, column, QModelIndex());
+                model->setData(index, list[row][column]);
+            }
+
+        }
+        table->setModel(model);
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QPushButton *mod = new QPushButton();
+            mod->setText("Modify");
+            table->setIndexWidget(model->index(i, 5), mod);
+            connect(mod,&QPushButton::clicked, [=]()
+                    {
+                        qDebug() << "mod -> " << i << " ide: " << ides[i];
+                    });
+
+            QPushButton *del = new QPushButton();
+            del->setText("Delete");
+            table->setIndexWidget(model->index(i, 6), del);
+            connect(del,&QPushButton::clicked, [=]()
+                    {
+                        qDebug() << "del -> " << i << " ide: " << ides[i];
+                        QString tableName;
+                        QString ide;
+                        if(flaga == Expenses)
+                        {
+                            tableName = "expenses";
+                            ide = "ide";
+                        }
+
+                        else
+                        {
+                            tableName = "incomes";
+                            ide = "idi";
+                        }
+
+                        this->deleteRecord(tableName, ides[i], dbHandler, ide);
+                        emit reloadInExSavGo();
+                    });
+        }
+    }
+    break;
+    case Savings:
+        QStringList headers = {"Amount", "Currency", "Goal", "Date", "Description","Modify","Delete"};
+        QSqlQuery query(queryString, dbHandler->returnDataBase());
+        QList<QStringList> list;
+        QVector<int> ides;
+        while(query.next())
+        {
+            QStringList tempList;
+            tempList.append(QString::number(query.value(0).toDouble()));
+            tempList.append(query.value(1).toString());
+            tempList.append(query.value(2).toString());
+            tempList.append(query.value(3).toString());
+            tempList.append(query.value(4).toString());
+            ides.append(query.value(5).toInt());
+            list.append(tempList);
+        }
+        // creating model of table
+        QStandardItemModel *model = new QStandardItemModel(list.size(), headers.size());
+        model->setHorizontalHeaderLabels(headers);
+
+        // adding items to model
+        for (int row = 0; row < list.size(); ++row)
+        {
+            for (int column = 0; column < list[row].size(); ++column)
+            {
+                QModelIndex index = model->index(row, column, QModelIndex());
+                model->setData(index, list[row][column]);
+            }
+        }
+        table->setModel(model);
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QPushButton *mod = new QPushButton();
+            mod->setText("Modify");
+            table->setIndexWidget(model->index(i, 5), mod);
+            connect(mod,&QPushButton::clicked, [=]()
+                    {
+                        qDebug() << "mod -> " << i << " ide: " << ides[i];
+                    });
+
+            QPushButton *del = new QPushButton();
+            del->setText("Delete");
+            table->setIndexWidget(model->index(i, 6), del);
+            connect(del,&QPushButton::clicked, [=]()
+                    {
+                        qDebug() << "del -> " << i << " ide: " << ides[i];
+                        QString tableName = "savings";
+                        QString ide = "ids";
+                        this->deleteRecord(tableName, ides[i], dbHandler, ide);
+                        emit reloadInExSavGo();
+                    });
+        }
+        break;
+    }
+}
+
+
+
+bool UserPanel::deleteRecord(QString &table, int id, DatabaseManager* dbHandler, QString& idName)
+{
+    QString queryString = QString("DELETE FROM %1 WHERE %2 = %3;").arg(table).arg(idName).arg(id);
+    QSqlQuery query(dbHandler->returnDataBase());
+    if(!query.exec(queryString))
+    {
+        qDebug() << "Error executing query: " << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 
 

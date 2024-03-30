@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1150</width>
     <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
+    <width>1150</width>
     <height>600</height>
    </size>
   </property>
@@ -116,7 +116,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>3</number>
           </property>
           <property name="tabBarAutoHide">
            <bool>false</bool>
@@ -163,13 +163,22 @@
            <attribute name="title">
             <string>Expenses</string>
            </attribute>
-           <layout class="QFormLayout" name="formLayout">
-            <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
              <widget class="QWidget" name="widgetExpenses" native="true">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="minimumSize">
                <size>
-                <width>231</width>
+                <width>173</width>
                 <height>191</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>16777215</height>
                </size>
               </property>
               <layout class="QFormLayout" name="formLayout_2">
@@ -238,7 +247,7 @@
               </layout>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item>
              <widget class="QTableView" name="tableExpenses"/>
             </item>
            </layout>
@@ -254,6 +263,12 @@
                <size>
                 <width>231</width>
                 <height>191</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>16777215</height>
                </size>
               </property>
               <layout class="QFormLayout" name="formLayout_3">
@@ -338,6 +353,12 @@
                <size>
                 <width>231</width>
                 <height>191</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>16777215</height>
                </size>
               </property>
               <layout class="QFormLayout" name="formLayout_4">
@@ -661,7 +682,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1150</width>
      <height>23</height>
     </rect>
    </property>
