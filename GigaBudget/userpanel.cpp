@@ -62,7 +62,7 @@ void UserPanel::creatingLoginPanel(QGridLayout* lay, DatabaseManager* db)
 
 void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
 {
-    QString queryString = QString("select title, goal_amount, current_amount, currency, description from goal where u_id LIKE %1;").arg(DatabaseManager::getUserId());
+    QString queryString = QString("select title, goal_amount, current_amount, currency, description, idg from goal where u_id LIKE %1;").arg(DatabaseManager::getUserId());
     QSqlQuery query(db->returnDataBase());
     query.prepare(queryString);
     query.exec();
@@ -73,6 +73,7 @@ void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
         double current_amount = query.value(2).toDouble();
         QString currency = query.value(3).toString();
         QString desc = query.value(4).toString();
+        int id = query.value(5).toInt();
         QString amount = QString("%1 / %2").arg(current_amount).arg(goal_amount);
 
 
@@ -84,15 +85,29 @@ void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
         QLabel* labelAmount = new QLabel(amount);
 
         QProgressBar* amountBar = new QProgressBar;
+
         amountBar->setOrientation(Qt::Horizontal);
         amountBar->setRange(0,goal_amount);
         amountBar->setValue(current_amount);
 
+        QPushButton* deleteButton = new QPushButton("Delete");
 
         layout->addWidget(labelTitle);
         layout->addWidget(labelDesc);
         layout->addWidget(labelAmount);
         layout->addWidget(amountBar);
+        layout->addWidget(deleteButton);
+
+        connect(deleteButton, &QPushButton::clicked, [=]()
+                {
+            QString tableName = "goal";
+            QString table = "savings";
+            QString ide = "idg";
+            QString idg = "g_id";
+            this->deleteRecord(table,id,db,idg);
+            this->deleteRecord(tableName,id,db,ide);
+            emit reloadInExSavGo();
+        });
 
 
         container->setLayout(layout);

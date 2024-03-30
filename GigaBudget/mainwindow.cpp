@@ -65,31 +65,20 @@ void MainWindow::login()
     ui->stackedWidget->setCurrentIndex(1);
     // change value of welcoming text
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
-    // list incomes, expenses, goals, saving for chosen user
-    QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
-    QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
-    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
-
-    up->deleteDynamicWidgets(ui->sumgoal);
-
-    up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
-    up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
-    up->creatingGoals(ui->sumgoal,dbHandler);
-    up->setUserSettings(dbHandler, ui->userSettingsUsername, ui->userSettingsDesc);
-
-    this->addingCategoriesItems();
-    // this->listSav(querySav, ui->tableSav);
-    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
+    this->reloadInExSavGo();
 }
 
 void MainWindow::reloadInExSavGo()
 {
+    up->deleteDynamicWidgets(ui->sumgoal);
     QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
     up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
     QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
     up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
     QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
     up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
+    up->creatingGoals(ui->sumgoal,dbHandler);
+    this->addingCategoriesItems();
 }
 
 // adding items to comboboxes in expenses and incomes
