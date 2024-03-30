@@ -126,6 +126,7 @@ void DatabaseManager::addSav(QString &title, double &amount, QString &currency, 
         query.prepare(queryString);
         query.exec();
     }
+
 }
 
 bool DatabaseManager::deleteUser()

@@ -61,23 +61,25 @@ MainWindow::~MainWindow()
 // loggin into account - loading all the things
 void MainWindow::login()
 {
-    // changing to page number 2
     ui->stackedWidget->setCurrentIndex(1);
-    // change value of welcoming text
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     this->reloadInExSavGo();
 }
 
 void MainWindow::reloadInExSavGo()
 {
+    QString query;
+
     up->deleteDynamicWidgets(ui->sumgoal);
-    QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
-    up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
-    QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
-    up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
-    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
-    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
+    up->deleteDynamicWidgets(ui->summaryCards);
+    query = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(query, ui->tableIncomes,dbHandler,UserPanel::Incomes);
+    query  = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
+    up->listExIn(query, ui->tableExpenses,dbHandler,UserPanel::Expenses);
+    query = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings left join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
+    up->listExIn(query,ui->tableSav,dbHandler,UserPanel::Savings);
     up->creatingGoals(ui->sumgoal,dbHandler);
+    up->currentBudget(ui->summaryCards,dbHandler);
     this->addingCategoriesItems();
 }
 
@@ -186,8 +188,7 @@ void MainWindow::on_goalAdd_clicked()
     qDebug() << title << amount << currency << desc;
     dbHandler->addGoal(title, amount, currency, desc);
     this->addingCategoriesItems();
-    up->deleteDynamicWidgets(ui->sumgoal);
-    up->creatingGoals(ui->sumgoal,dbHandler);
+    this->reloadInExSavGo();
 }
 
 
@@ -198,11 +199,7 @@ void MainWindow::on_savingsButton_clicked()
     QString currency = ui->savingsCurrency->currentText();
     QString desc = ui->savingsDesc->toPlainText();
     dbHandler->addSav(title, amount, currency, desc);
-    QString querySav = QString("SELECT amount, savings.currency, title, date, savings.description, ids FROM savings inner join goal on g_id=idg where savings.u_id =%1;").arg(DatabaseManager::getUserId());
-    // this->listSav(querySav, ui->tableSav);
-    up->listExIn(querySav,ui->tableSav,dbHandler,UserPanel::Savings);
-    up->deleteDynamicWidgets(ui->sumgoal);
-    up->creatingGoals(ui->sumgoal,dbHandler);
+    this->reloadInExSavGo();
 }
 
 void MainWindow::on_buttonLogout_clicked()
@@ -253,6 +250,7 @@ void MainWindow::on_buttonIncomes_clicked()
 
     QString queryIn = QString("SELECT amount, currency, category, date, description, idi FROM incomes where u_id = %1").arg(DatabaseManager::getUserId());
     up->listExIn(queryIn, ui->tableIncomes,dbHandler,UserPanel::Incomes);
+    this->reloadInExSavGo();
 }
 
 void MainWindow::on_buttonExpenses_clicked()
@@ -268,6 +266,7 @@ void MainWindow::on_buttonExpenses_clicked()
 
     QString queryEx = QString("SELECT amount, currency, category, date, description, ide FROM expenses where u_id = %1").arg(DatabaseManager::getUserId());
     up->listExIn(queryEx, ui->tableExpenses,dbHandler,UserPanel::Expenses);
+    this->reloadInExSavGo();
 
 }
 
@@ -312,6 +311,7 @@ void MainWindow::on_userSettingsChange_clicked()
         up->deleteDynamicWidgets(ui->users);
         up->creatingLoginPanel(ui->users,dbHandler);
         ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
+        this->reloadInExSavGo();
     }
 }
 

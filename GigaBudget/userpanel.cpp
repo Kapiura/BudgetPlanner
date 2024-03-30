@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QProgressBar>
 #include <QStandardItemModel>
+#include <QMessageBox>
 
 UserPanel::UserPanel(QObject *parent)
     : QObject{parent}
@@ -70,55 +71,79 @@ void UserPanel::creatingGoals(QGridLayout* area, DatabaseManager* db)
     {
         QString title = query.value(0).toString();
         double goal_amount = query.value(1).toDouble();
-        double current_amount = query.value(2).toDouble();
+        // double current_amount = query.value(2).toDouble();
         QString currency = query.value(3).toString();
         QString desc = query.value(4).toString();
         int id = query.value(5).toInt();
-        QString amount = QString("%1 / %2").arg(current_amount).arg(goal_amount);
 
-
-        QWidget* container = new QWidget;
-        QHBoxLayout* layout = new QHBoxLayout;
-
-        QLabel* labelTitle = new QLabel(title);
-        QLabel* labelDesc = new QLabel(desc);
-        QLabel* labelAmount = new QLabel(amount);
-
+        QString tempStr = QString("select sum(amount) from savings where g_id=%1;").arg(id);
+        QSqlQuery tempquery(tempStr,db->returnDataBase());
+        double tempdouble;
         QProgressBar* amountBar = new QProgressBar;
+        if(tempquery.next()) {
+            tempdouble = tempquery.value(0).toDouble();
+            qDebug() << tempdouble;
+        }
+        else
+            tempdouble = 0;
+        tempStr = QString("update goal set current_value=%1 where idg=%2;").arg(tempdouble).arg(id);
 
-        amountBar->setOrientation(Qt::Horizontal);
-        amountBar->setRange(0,goal_amount);
-        amountBar->setValue(current_amount);
-
-        QPushButton* deleteButton = new QPushButton("Delete");
-
-        layout->addWidget(labelTitle);
-        layout->addWidget(labelDesc);
-        layout->addWidget(labelAmount);
-        layout->addWidget(amountBar);
-        layout->addWidget(deleteButton);
-
-        connect(deleteButton, &QPushButton::clicked, [=]()
-                {
-            QString tableName = "goal";
-            QString table = "savings";
-            QString ide = "idg";
-            QString idg = "g_id";
-            this->deleteRecord(table,id,db,idg);
-            this->deleteRecord(tableName,id,db,ide);
-            emit reloadInExSavGo();
-        });
+        QString amount = QString("%1 / %2").arg(tempdouble).arg(goal_amount);
 
 
-        container->setLayout(layout);
-        area->addWidget(container);
-        // connect(button, &QPushButton::clicked,  [=] ()
-        //         {
-        //             DatabaseManager::userId = id;
-        //             DatabaseManager::currentUsername = username;
-        //             // qDebug() << db->getUserId() << " " << db->getCurrentUsername();
-        //             emit login();
-        //         });
+
+            QWidget* container = new QWidget;
+            QHBoxLayout* layout = new QHBoxLayout;
+
+            QLabel* labelTitle = new QLabel(title);
+            QLabel* labelDesc = new QLabel(desc);
+            QLabel* labelAmount = new QLabel(amount);
+
+
+
+
+            amountBar->setOrientation(Qt::Horizontal);
+            amountBar->setRange(0,goal_amount);
+            amountBar->setValue(tempdouble);
+
+            QPushButton* deleteButton = new QPushButton("Delete");
+
+            layout->addWidget(labelTitle);
+            layout->addWidget(labelDesc);
+            layout->addWidget(labelAmount);
+            layout->addWidget(amountBar);
+            layout->addWidget(deleteButton);
+
+            connect(deleteButton, &QPushButton::clicked, [=]()
+                    {
+                        QString tableName = "goal";
+                        QString table = "savings";
+                        QString ide = "idg";
+                        QString idg = "g_id";
+                        this->deleteRecord(table,id,db,idg);
+                        this->deleteRecord(tableName,id,db,ide);
+                        emit reloadInExSavGo();
+                    });
+
+
+            container->setLayout(layout);
+            area->addWidget(container);
+
+
+
+            if(tempdouble >= goal_amount)
+            {
+                QMessageBox msgBox;
+                msgBox.setText(QString("Congratulations! You have successfully saved %1 towards %2.").arg(goal_amount).arg(title));
+                msgBox.exec();
+                QString tableName = "goal";
+                QString table = "savings";
+                QString ide = "idg";
+                QString idg = "g_id";
+                this->deleteRecord(table,id,db,idg);
+                this->deleteRecord(tableName,id,db,ide);
+                emit reloadInExSavGo();
+            }
     }
 }
 
@@ -335,6 +360,34 @@ bool UserPanel::deleteRecord(QString &table, int id, DatabaseManager* dbHandler,
     }
     return true;
 }
+
+void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
+{
+    QString queryString = QString("SELECT ((SELECT SUM(amount) FROM incomes WHERE u_id = %1) - (SELECT SUM(amount) FROM expenses WHERE u_id = %1));").arg(DatabaseManager::getUserId());
+    QSqlQuery query(db->returnDataBase());
+    query.prepare(queryString);
+    query.exec();
+    double id;
+    while(query.next())
+    {
+id = query.value(0).toDouble();
+    }
+        QWidget* container = new QWidget;
+        QHBoxLayout* layout = new QHBoxLayout;
+
+        QLabel* label = new QLabel(DatabaseManager::getCurrentUsername());
+        QLabel* balance = new QLabel(QString("Current balance: %1").arg(id));
+
+        layout->addWidget(label);
+        layout->addWidget(balance);
+
+        container->setLayout(layout);
+        lay->addWidget(container);
+}
+
+
+
+
 
 
 

@@ -31,6 +31,7 @@ public:
     void setUserSettings(DatabaseManager* db, QLineEdit* username, QTextEdit* desc);
     void listExIn(QString &queryString, QTableView* table,DatabaseManager* dbHandler,Flag flaga);
     bool deleteRecord(QString& table, int id, DatabaseManager* dbHandler,QString& idName);
+    void currentBudget(QGridLayout* lay, DatabaseManager* db);
 
     // void creatingGoals();
     void creatingGoals(QGridLayout* area, DatabaseManager* db);

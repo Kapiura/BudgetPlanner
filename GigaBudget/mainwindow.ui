@@ -116,7 +116,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="tabBarAutoHide">
            <bool>false</bool>
@@ -125,17 +125,6 @@
            <attribute name="title">
             <string>Summary</string>
            </attribute>
-           <widget class="QWidget" name="horizontalLayoutWidget">
-            <property name="geometry">
-             <rect>
-              <x>30</x>
-              <y>350</y>
-              <width>701</width>
-              <height>80</height>
-             </rect>
-            </property>
-            <layout class="QHBoxLayout" name="summaryCards"/>
-           </widget>
            <widget class="QWidget" name="gridLayoutWidget">
             <property name="geometry">
              <rect>
@@ -157,6 +146,17 @@
              </rect>
             </property>
             <layout class="QGridLayout" name="sumgoal"/>
+           </widget>
+           <widget class="QWidget" name="gridLayoutWidget_3">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>330</y>
+              <width>711</width>
+              <height>80</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="summaryCards"/>
            </widget>
           </widget>
           <widget class="QWidget" name="expesnes">
