@@ -2,6 +2,30 @@
 
 ---
 
+## Aktualizacja 5
+
+- **Okno logowania**
+    - Dodano funkcjonalność wyświetlania okienka z cytatami dotyczącymi pieniędzy po zalogowaniu
+    - Cy­taty są pobierane z bazy danych, gdzie każdemu dniowi jest przypisany inny cytat
+    - Zaimplementowano wyświetlanie okienka z cytatami po każdym logowaniu użytkownika
+
+- **Tabela oszczędności**
+    - Dodano funkcjonalność zmiany licznika obecnego salda celu oszczędności po dodaniu rekordów
+    - Po osiągnięciu celu oszczędzania wyświetla się okienko z gratulacjami, a następnie usuwane są wszystkie rekordy związane z tym oszczędzaniem oraz sam cel
+    - Do celu oszczędzania dodano progress bar, który procentowo pokazuje ilość zebranych pieniędzy na dany cel
+    - Dodano przycisk usuwania celu, który usuwa również rekordy w tabeli oszczędności należące do tego celu
+
+- **Podsumowanie**
+    - Dodano wyświetlanie celów na zakładce "Podsumowanie", gdzie każdy cel jest wyświetlany jako blok zawierający tytuł, obecną i docelową ilość pieniędzy, opis, progress bar oraz przycisk usuń
+    - Przycisk "Usuń" przy celu usuwa cel oraz rekordy w tabeli oszczędności z nim związane
+
+- **Ogólne ulepszenia**
+    - Zaimplementowano wiele udogodnień w kodzie, takich jak zastąpienie wielu metod jedną, dynamiczne aktualizowanie danych w czasie rzeczywistym oraz usuwanie istniejących widżetów dzięki nowej metodzie usuwania
+
+Powyższe zmiany przyczyniły się do usprawnienia kodu oraz zmniejszenia jego objętości, co pozwoliło na bardziej elastyczną i dynamiczną pracę z aplikacją.
+
+---
+
 ## Aktualizacja 4 
 
 - **Baza danych**

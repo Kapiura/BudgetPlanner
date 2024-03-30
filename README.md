@@ -37,6 +37,10 @@ git clone https://github.com/Kapiura/BudgetPlanner.git
 sudo ./run
 ```
 
+## Aktualizacje
+
+Aktualizacje programu można znaleźć w pliku [updated.md](updated.md).
+
 ## Autor
 
 Ten projekt został stworzony przez [Kapiura](https://github.com/Kapiura/) ;33
