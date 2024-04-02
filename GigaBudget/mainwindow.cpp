@@ -171,6 +171,14 @@ void MainWindow::dailyQuote()
     msgBox.exec();
 }
 
+void MainWindow::messPopUp(QString &text, QString &title)
+{
+    QMessageBox mess(this);
+    mess.setText(text);
+    mess.setWindowTitle(title);
+    mess.exec();
+}
+
 void MainWindow::setDefaultPageIndex()
 {
     ui->tabWidget_2->setCurrentIndex(0);
@@ -242,38 +250,58 @@ void MainWindow::on_btnCreateUser_clicked()
 
 void MainWindow::on_buttonIncomes_clicked()
 {
-    // variables of incomes
-    int id = dbHandler->getUserId();
-    double amount = ui->amountIncomes->value();
-    QString currency = ui->currencyIncomes->currentText();
-    QString desc = ui->descIncomes->toPlainText();
-    QString category = ui->categoryIncomes->currentText();
-    // making a query -  adding record to table incomes
-    dbHandler->addIncomes(id, amount, currency, category, desc);
+      if(up->checkIfEmpty(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes))
+    {
+          // variables of incomes
+          int id = dbHandler->getUserId();
+          double amount = ui->amountIncomes->value();
+          QString currency = ui->currencyIncomes->currentText();
+          QString desc = ui->descIncomes->toPlainText();
+          QString category = ui->categoryIncomes->currentText();
+          // making a query -  adding record to table incomes
+          dbHandler->addIncomes(id, amount, currency, category, desc);
 
-    QString queryIn = QString("SELECT amount, currency, category, date, "
-                              "description, idi FROM incomes where u_id = %1")
-                          .arg(DatabaseManager::getUserId());
-    up->listExIn(queryIn, ui->tableIncomes, dbHandler, UserPanel::Incomes);
-    this->reloadInExSavGo();
+          QString queryIn = QString("SELECT amount, currency, category, date, "
+                                    "description, idi FROM incomes where u_id = %1")
+                                .arg(DatabaseManager::getUserId());
+          up->listExIn(queryIn, ui->tableIncomes, dbHandler, UserPanel::Incomes);
+          this->reloadInExSavGo();
+      }
+    else
+      {
+        QString str = "Not enough data";
+        QString title = "Error";
+        this->messPopUp(str,title);
+    }
+
 }
 
 void MainWindow::on_buttonExpenses_clicked()
 {
-    // variables of expenses
-    int id = dbHandler->getUserId();
-    double amount = ui->amountExpenses->value();
-    QString currency = ui->currencyExpenses->currentText();
-    QString desc = ui->descExpenses->toPlainText();
-    QString category = ui->categoryExpenses->currentText();
-    // making a query - adding record to table expenses
-    dbHandler->addExpenses(id, amount, currency, category, desc);
+    if(up->checkIfEmpty(ui->amountExpenses, ui->currencyExpenses, ui->categoryExpenses, ui->descExpenses))
+    {
+        int id = dbHandler->getUserId();
+        double amount = ui->amountExpenses->value();
+        QString currency = ui->currencyExpenses->currentText();
+        QString desc = ui->descExpenses->toPlainText();
+        QString category = ui->categoryExpenses->currentText();
+        // making a query - adding record to table expenses
+        dbHandler->addExpenses(id, amount, currency, category, desc);
 
-    QString queryEx = QString("SELECT amount, currency, category, date, "
-                              "description, ide FROM expenses where u_id = %1")
-                          .arg(DatabaseManager::getUserId());
-    up->listExIn(queryEx, ui->tableExpenses, dbHandler, UserPanel::Expenses);
-    this->reloadInExSavGo();
+        QString queryEx = QString("SELECT amount, currency, category, date, "
+                                  "description, ide FROM expenses where u_id = %1")
+                              .arg(DatabaseManager::getUserId());
+        up->listExIn(queryEx, ui->tableExpenses, dbHandler, UserPanel::Expenses);
+        up->setDefaultBox(ui->amountExpenses, ui->currencyExpenses, ui->categoryExpenses, ui->descExpenses);
+        this->reloadInExSavGo();
+    }
+    else
+    {
+        QString str = "Not enough data";
+        QString title = "Error";
+        this->messPopUp(str,title);
+    }
+
 }
 
 void MainWindow::on_deleteButton_clicked()

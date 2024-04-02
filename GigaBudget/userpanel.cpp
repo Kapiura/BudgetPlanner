@@ -372,3 +372,20 @@ void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
     container->setLayout(layout);
     lay->addWidget(container);
 }
+
+bool UserPanel::checkIfEmpty(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
+{
+    if(b1->value()>0 && !b2->currentText().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty())
+        return true;
+    else
+        return false;
+}
+
+void UserPanel::setDefaultBox(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
+{
+    qDebug() << "Set default values";
+    b1->setValue(0.0);
+    b2->setCurrentIndex(0);
+    b3->setCurrentIndex(0);
+    b4->setText("");
+}

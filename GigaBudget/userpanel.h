@@ -11,6 +11,8 @@
 #include <QTableView>
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QDoubleSpinBox>
+#include <QComboBox>
 
 class UserPanel : public QObject
 {
@@ -32,6 +34,10 @@ class UserPanel : public QObject
     void listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga);
     bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
     void currentBudget(QGridLayout *lay, DatabaseManager *db);
+
+    bool checkIfEmpty(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);
+    void setDefaultBox(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);
+
 
     // void creatingGoals();
     void creatingGoals(QGridLayout *area, DatabaseManager *db);

@@ -53,6 +53,7 @@ class MainWindow : public QMainWindow
     QMessageBox *messDialog;
 
     void dailyQuote();
+    void messPopUp(QString& text, QString& title);
 
   private slots:
     void login();
