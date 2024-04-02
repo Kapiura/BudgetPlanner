@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <QObject>
+#include <QtCharts>
 
 class Graph : public QObject
 {
