@@ -373,12 +373,16 @@ void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
     lay->addWidget(container);
 }
 
+// expenses, incomes, savings
 bool UserPanel::checkIfEmpty(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
 {
-    if(b1->value()>0 && !b2->currentText().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty())
-        return true;
-    else
-        return false;
+   return (b1->value()>0 && !b2->currentText().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty())?true:false;
+}
+
+// goal
+bool UserPanel::checkIfEmpty(QLineEdit *b1, QDoubleSpinBox *b2, QComboBox *b3, QPlainTextEdit *b4)
+{
+    return (!b1->text().isEmpty() && !b2->text().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty()) ? true:false;
 }
 
 void UserPanel::setDefaultBox(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
@@ -388,4 +392,13 @@ void UserPanel::setDefaultBox(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, 
     b2->setCurrentIndex(0);
     b3->setCurrentIndex(0);
     b4->setText("");
+}
+
+void UserPanel::setDefaultBox(QLineEdit *b1, QDoubleSpinBox *b2, QComboBox *b3, QPlainTextEdit *b4)
+{
+    qDebug() << "Set default values";
+    b1->setText("");
+    b2->setValue(0.0);
+    b3->setCurrentIndex(0);
+    b4->setPlainText("");
 }

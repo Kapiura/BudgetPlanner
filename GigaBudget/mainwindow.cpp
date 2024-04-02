@@ -192,30 +192,50 @@ void MainWindow::setDefaultPageIndex()
 
 void MainWindow::on_goalAdd_clicked()
 {
-    // getting things
-    QString title = ui->goalTitle->text();
-    double amount = ui->goalAmount->value();
-    QString currency = ui->goalCurrency->currentText();
-    QString desc = ui->goalDesc->toPlainText();
-    qDebug() << title << amount << currency << desc;
-    dbHandler->addGoal(title, amount, currency, desc);
-    this->addingCategoriesItems();
-    this->reloadInExSavGo();
+if(up->checkIfEmpty(ui->goalTitle,ui->goalAmount,ui->goalCurrency,ui->goalDesc))
+{
+        QString title = ui->goalTitle->text();
+        double amount = ui->goalAmount->value();
+        QString currency = ui->goalCurrency->currentText();
+        QString desc = ui->goalDesc->toPlainText();
+        qDebug() << title << amount << currency << desc;
+        dbHandler->addGoal(title, amount, currency, desc);
+        this->addingCategoriesItems();
+        up->setDefaultBox(ui->goalTitle,ui->goalAmount,ui->goalCurrency,ui->goalDesc);
+        this->reloadInExSavGo();
+    }
+    else
+    {
+        QString str = "Not enough data";
+        QString title = "Error";
+        this->messPopUp(str,title);
+    }
+
 }
 
 void MainWindow::on_savingsButton_clicked()
 {
+    if(up->checkIfEmpty(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc))
+  {
     QString title = ui->savingsGoal->currentText();
     double amount = ui->savingsAmount->value();
     QString currency = ui->savingsCurrency->currentText();
     QString desc = ui->savingsDesc->toPlainText();
     dbHandler->addSav(title, amount, currency, desc);
+    up->setDefaultBox(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc);
     this->reloadInExSavGo();
+    }
+    else
+    {
+      QString str = "Not enough data";
+      QString title = "Error";
+      this->messPopUp(str,title);
+  }
 }
 
 void MainWindow::on_buttonLogout_clicked()
 {
-    // setting chosen user id and name
+    // set chosen user id and name
     DatabaseManager::userId = 0;
     DatabaseManager::currentUsername = "";
     // returning to selecting user
@@ -265,6 +285,7 @@ void MainWindow::on_buttonIncomes_clicked()
                                     "description, idi FROM incomes where u_id = %1")
                                 .arg(DatabaseManager::getUserId());
           up->listExIn(queryIn, ui->tableIncomes, dbHandler, UserPanel::Incomes);
+          up->setDefaultBox(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes);
           this->reloadInExSavGo();
       }
     else
@@ -323,7 +344,7 @@ void MainWindow::on_deleteButton_clicked()
     }
     else
         qDebug() << "Deleting stopped";
-}
+    }
 // -----------------------------------------
 // -----------------------------------------
 

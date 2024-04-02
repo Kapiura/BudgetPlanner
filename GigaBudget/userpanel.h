@@ -13,6 +13,7 @@
 #include <QVBoxLayout>
 #include <QDoubleSpinBox>
 #include <QComboBox>
+#include <QPlainTextEdit>
 
 class UserPanel : public QObject
 {
@@ -36,7 +37,9 @@ class UserPanel : public QObject
     void currentBudget(QGridLayout *lay, DatabaseManager *db);
 
     bool checkIfEmpty(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);
+    bool checkIfEmpty(QLineEdit* b1, QDoubleSpinBox* b2, QComboBox* b3, QPlainTextEdit* b4);
     void setDefaultBox(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);
+    void setDefaultBox(QLineEdit* b1, QDoubleSpinBox* b2, QComboBox* b3, QPlainTextEdit* b4);
 
 
     // void creatingGoals();
