@@ -14,6 +14,8 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QPlainTextEdit>
+#include <array>
+#include <QStandardItemModel>
 
 class UserPanel : public QObject
 {
@@ -34,6 +36,9 @@ class UserPanel : public QObject
     void setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc);
     void listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga);
     bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
+    // bool updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
+    std::array<QString, 5> getRowData(QStandardItemModel* model, const int& in);
+    bool updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName, std::array<QString,5> rowData);
     void currentBudget(QGridLayout *lay, DatabaseManager *db);
 
     bool checkIfEmpty(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);

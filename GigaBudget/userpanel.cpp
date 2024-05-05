@@ -256,7 +256,25 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
             QPushButton *mod = new QPushButton();
             mod->setText("Modify");
             table->setIndexWidget(model->index(i, 5), mod);
-            connect(mod, &QPushButton::clicked, [=]() { qDebug() << "mod -> " << i << " ide: " << ides[i]; });
+            connect(mod, &QPushButton::clicked, [=]()
+            {
+                QString tableName;
+                QString ide;
+                if (flaga == Expenses)
+                {
+                    tableName = "expenses";
+                    ide = "ide";
+                }
+                else
+                {
+                    tableName = "incomes";
+                    ide = "idi";
+                }
+                std::array<QString, 5> data = this->getRowData(model,i);
+
+                this->updateRecord(tableName, ides[i], dbHandler, ide, data);
+                emit reloadInExSavGo();
+            });
 
             QPushButton *del = new QPushButton();
             del->setText("Delete");
@@ -270,7 +288,6 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
                     tableName = "expenses";
                     ide = "ide";
                 }
-
                 else
                 {
                     tableName = "incomes";
@@ -324,7 +341,13 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
                 QPushButton *mod = new QPushButton();
                 mod->setText("Modify");
                 table->setIndexWidget(model->index(i, 5), mod);
-                connect(mod, &QPushButton::clicked, [=]() { qDebug() << "mod -> " << i << " ide: " << ides[i]; });
+                connect(mod, &QPushButton::clicked, [=]() {
+                    QString tableName = "savings";
+                    QString ide = "ids";
+                    std::array<QString, 5> data = this->getRowData(model, i);
+                    this->updateRecord(tableName, ides[i], dbHandler, ide, data);
+                    emit reloadInExSavGo();
+                });
 
                 QPushButton *del = new QPushButton();
                 del->setText("Delete");
@@ -354,6 +377,47 @@ bool UserPanel::deleteRecord(QString &table, int id, DatabaseManager *dbHandler,
         return false;
     }
     return true;
+}
+
+bool UserPanel::updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName, std::array<QString,5> rowData)
+{
+    QString queryString = QString("UPDATE %1 SET amount=%4, currency='%5', description='%6' WHERE %2 = %3;")
+            .arg(table).arg(idName).arg(id)
+            .arg(rowData[0]).arg(rowData[1]).arg(rowData[4]);
+    /*
+    "amount"
+    "curr"
+    "rent"
+    "date"
+    "desc"
+    */
+    QSqlQuery query(dbHandler->returnDataBase());
+    if(!query.exec(queryString))
+    {
+        qDebug() << "Error executing query: " << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+std::array<QString, 5> UserPanel::getRowData(QStandardItemModel* model, const int& in)
+{
+    std::array<QString, 5> result;
+    for(int j = 0; j < result.size(); j++)
+    {
+        QModelIndex index = model->index(in,j);
+
+        if(index.isValid())
+        {
+            QVariant dataV = index.data(Qt::DisplayRole);
+
+            if(dataV.isValid())
+            {
+                result[j] = dataV.toString();
+            }
+        }
+    }
+    return result;
 }
 
 void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
