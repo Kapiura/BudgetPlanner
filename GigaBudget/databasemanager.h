@@ -41,6 +41,10 @@ public:
   static int userId;
   static QString currentUsername;
 
+  bool exportData(const QString& username, const int& user_id);
+  bool importData(const QString& username, const int& user_id);
+  void addJsonObjectToFile(QSqlQuery& query,QTextStream& out);
+
 private:
   QSqlDatabase db;
   // variables required to connect to database

@@ -1,7 +1,14 @@
 #include "databasemanager.h"
 #include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QProcess>
+#include <QSqlRecord>
+#include <QString>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
+#include <QUrl>
+#include <QDesktopServices>
 
 int DatabaseManager::userId = 0;
 QString DatabaseManager::currentUsername = "";
@@ -178,5 +185,76 @@ bool DatabaseManager::deleteData(QString &table)
         qDebug() << "Something gone wrong";
         qDebug() << query.lastError().text();
         return false;
+    }
+}
+
+bool DatabaseManager::exportData(const QString &username, const int &user_id)
+{
+    QSqlQuery query(db);
+    QString fileName = QString(QDir::homePath() + "/BudgetPlanner-data-export-%1.json").arg(username);
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Error: cannot open a file";
+        return false;
+    }
+    QTextStream out(&file);
+    QString queryString;
+    std::array<QString, 3> tables = {"expenses", "incomes", "savings"};
+    for (auto &el : tables)
+    {
+        queryString =
+            QString(
+                "SELECT JSON_OBJECT"
+                "('amount',amount,'currency',currency,'date',date,'description',description,'table','%1')"
+                " AS json FROM %1 WHERE u_id=%2;")
+                .arg(el)
+                .arg(user_id);
+        query.prepare(queryString);
+        qDebug() << el;
+        if (!query.exec())
+        {
+            qDebug() << "Error: query executing\n";
+            return false;
+        }
+     this->addJsonObjectToFile(query,out);
+    }
+    //goals
+    queryString = QString("SELECT JSON_OBJECT"
+                          "('goal_amount',goal_amount,'current_amount',current_amount,"
+                          "'currency','currency','description',description,"
+                          "'title',title,'table','goal') "
+                          "AS json FROM goal WHERE u_id=%1").arg(user_id);
+    query.prepare(queryString);
+    if(!query.exec())
+    {
+        qDebug() << "Error: query executing\n";
+        return false;
+    }
+    this->addJsonObjectToFile(query,out);
+
+    file.close();
+    return true;
+}
+
+bool DatabaseManager::importData(const QString& username, const int& user_id)
+{
+    QSqlQuery query(db);
+    QFile file;
+    QDesktopServices::openUrl(QUrl("file:///"));
+    // switch case
+    return true;
+}
+
+void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
+{
+    while (query.next())
+    {
+        QString data;
+        for (int i = 0; i < query.record().count(); i++)
+        {
+            data += query.value(i).toString();
+        }
+        out << data.trimmed();
     }
 }
