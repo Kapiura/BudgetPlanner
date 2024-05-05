@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow
         return ui->stackedWidget->currentIndex();
     };
 
-    void listExIn(QString &queryString, QTableView *table);
+    // void listExIn(QString &queryString, QTableView *table);
     void listSav(QString &queryString, QTableView *table);
 
     DatabaseManager *returnDb()
@@ -53,7 +53,7 @@ class MainWindow : public QMainWindow
     QMessageBox *messDialog;
 
     void dailyQuote();
-    void messPopUp(QString& text, QString& title);
+    void messPopUp(const QString& text, const QString& title);
 
   private slots:
     void login();
@@ -66,5 +66,6 @@ class MainWindow : public QMainWindow
     void on_savingsButton_clicked();
     void on_deleteButton_clicked();
     void on_userSettingsChange_clicked();
+    void on_btnExportData_clicked();
 };
 #endif // MAINWINDOW_H

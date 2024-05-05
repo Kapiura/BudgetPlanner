@@ -171,7 +171,7 @@ void MainWindow::dailyQuote()
     msgBox.exec();
 }
 
-void MainWindow::messPopUp(QString &text, QString &title)
+void MainWindow::messPopUp(const QString &text, const QString &title)
 {
     QMessageBox mess(this);
     mess.setText(text);
@@ -368,3 +368,14 @@ void MainWindow::on_userSettingsChange_clicked()
         this->reloadInExSavGo();
     }
 }
+
+void MainWindow::on_btnExportData_clicked()
+{
+    // pobieranie danych z bazdy danych essa
+    if(dbHandler->exportData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
+    {
+        this->messPopUp("Export has been done successfully","Export");
+    }
+
+}
+
