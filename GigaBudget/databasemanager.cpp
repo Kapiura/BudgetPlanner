@@ -271,7 +271,7 @@ bool DatabaseManager::importData(const QString& username, const int& user_id)
     }
 
     while (!file.atEnd()) {
-            QByteArray line = file.readLine().trimmed(); // Read and remove any trailing whitespace, including the newline character
+            QByteArray line = file.readLine().trimmed();
 
             if (line.isEmpty()) {
                 continue;
