@@ -2,6 +2,7 @@
 #define USERPANEL_H
 
 #include "databasemanager.h"
+#include "graph.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QObject>
@@ -33,10 +34,12 @@ class UserPanel : public QObject
 
     void creatingLoginPanel(QGridLayout *lay, DatabaseManager *db);
     void deleteDynamicWidgets(QGridLayout *lay);
+    void creatingGraph(const QMap<QString, double>& map, QFrame *frame, QString &title);
+    void clearGraph();
+    void updateGraph(const QMap<QString, double>& map, QString &title);
     void setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc);
     void listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga);
     bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
-    // bool updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
     std::array<QString, 5> getRowData(QStandardItemModel* model, const int& in);
     bool updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName, std::array<QString,5> rowData);
     void currentBudget(QGridLayout *lay, DatabaseManager *db);
@@ -46,8 +49,6 @@ class UserPanel : public QObject
     void setDefaultBox(QDoubleSpinBox* b1, QComboBox* b2, QComboBox* b3, QTextEdit* b4);
     void setDefaultBox(QLineEdit* b1, QDoubleSpinBox* b2, QComboBox* b3, QPlainTextEdit* b4);
 
-
-    // void creatingGoals();
     void creatingGoals(QGridLayout *area, DatabaseManager *db);
     QWidget *returnGridLaylout()
     {
@@ -59,6 +60,7 @@ class UserPanel : public QObject
   private:
     QWidget *_loginPanel;
     QWidget *_goals;
+    Graph* graph;
 
   signals:
     void login();

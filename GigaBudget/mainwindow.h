@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow
     {
         return ui->stackedWidget->currentIndex();
     };
+    Ui::MainWindow* returnUi(){return ui;};
 
     // void listExIn(QString &queryString, QTableView *table);
     void listSav(QString &queryString, QTableView *table);

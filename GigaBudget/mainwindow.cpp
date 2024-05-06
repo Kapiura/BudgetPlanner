@@ -28,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     up->creatingLoginPanel(ui->users, dbHandler);
     this->setDefaultPageIndex();
+    // QString title = "Incomes and Expenses";
+    // up->clearGraph();
+    // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
+    QString title = "Incomes and Expenses";
+    QMap<QString,double> tempMap = dbHandler->ExIn();
+    up->creatingGraph(tempMap,ui->frameExIn,title);
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +61,7 @@ void MainWindow::login()
     ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     this->reloadInExSavGo();
     this->dailyQuote();
+
 }
 
 void MainWindow::reloadInExSavGo()
@@ -78,6 +85,14 @@ void MainWindow::reloadInExSavGo()
     up->creatingGoals(ui->sumgoal, dbHandler);
     up->currentBudget(ui->summaryCards, dbHandler);
     this->addingCategoriesItems();
+    // QString title = "Incomes and Expenses";
+    // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
+    // up->updateGraph(dbHandler->ExIn(),title);
+    QString title = "Incomes and Expenses";
+    QMap<QString,double> tempMap = dbHandler->ExIn();
+    // up->creatingGraph(tempMap,ui->frameExIn,title);
+    up->updateGraph(tempMap,title);
+
 }
 
 // adding items to comboboxes in expenses and incomes
@@ -156,6 +171,7 @@ void MainWindow::listSav(QString &queryString, QTableView *table)
         }
     }
     table->setModel(model);
+
 }
 
 void MainWindow::dailyQuote()

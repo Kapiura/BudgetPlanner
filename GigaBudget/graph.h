@@ -1,29 +1,41 @@
+// graph.h
+
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include <QChart>
 #include <QChartView>
-#include <QDebug>
+#include <QFrame>
 #include <QObject>
 #include <QPieSeries>
+#include <QVBoxLayout>
 #include <QtCharts>
 
 class Graph : public QObject
 {
-private:
-    QPieSeries *series = new QPieSeries();
-    QChart *chart = new QChart();
-    QChartView *chartView = new QChartView();
-
     Q_OBJECT
 public:
     explicit Graph(QObject *parent = nullptr);
+
     ~Graph();
 
-    bool updatePieSeries();
-    bool addSeries();
-    bool setView();
+    void setFrame(QFrame *frame);
+    QChartView *getView(); // Deklaracja metody getView()
 
-signals:
+    void addSlice(const QString &label, qreal value);
+    void addDataFromMap(const QMap<QString, qreal> &data);
+    void clearGraph();
+    void setTitle(const QString &title);
+    void addLegend();
+    void updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const QString &title);
+    void updateGraph(const QMap<QString, qreal> &data, const QString &title);
+    void updateGraphWithData(const QMap<QString, qreal> &data, const QString &title);
+
+private:
+    QPieSeries *series;
+    QChart *chart;
+    QChartView *chartView;
+    QFrame *frame;
 };
 
 #endif // GRAPH_H

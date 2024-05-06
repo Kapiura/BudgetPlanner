@@ -124,7 +124,9 @@ void DatabaseManager::addGoal(QString &title, double &amount, QString &currency,
 
 void DatabaseManager::addSav(QString &title, double &amount, QString &currency, QString &desc)
 {
-    QString queryString = QString("SELECT idg FROM goal WHERE title = '%1'").arg(title);
+    //SELECT idg FROM goal LEFT JOIN users ON idu=u_id where title="Taczka" and u_id=21;
+    //QString queryString = QString("SELECT idg FROM goal WHERE title = '%1'").arg(title);
+    QString queryString = QString("SELECT idg FROM goal LEFT JOIN users ON idu=u_id where title='%2' and u_id=%1;").arg(DatabaseManager::userId).arg(title);
     QSqlQuery query(queryString, db);
     if (query.next())
     {
@@ -324,3 +326,60 @@ void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
         out << data.trimmed() << "\n";
     }
 }
+
+int DatabaseManager::expensesAmount30days()
+{
+    QString queryString = QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(DatabaseManager::userId);
+    QSqlQuery query(db);
+    query.prepare(queryString);
+    if(!query.exec())
+    {
+        qDebug() << "Error: unable to exec query";
+        return 0;
+    }
+
+    // Sprawdź, czy obiekt QSqlQuery jest ustawiony na rekord
+    if(query.next()) {
+        // Odczytaj wartość z obiektu QSqlQuery
+        return query.value(0).toInt();
+    } else {
+        qDebug() << "No valid record found";
+        return 0;
+    }
+}
+
+int DatabaseManager::incomesAmount30days()
+{
+    QString queryString = QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(DatabaseManager::userId);
+    QSqlQuery query(db);
+    query.prepare(queryString);
+    if(!query.exec())
+    {
+        qDebug() << "Error: unable to exec query";
+        return 0;
+    }
+
+    // Sprawdź, czy obiekt QSqlQuery jest ustawiony na rekord
+    if(query.next()) {
+        // Odczytaj wartość z obiektu QSqlQuery
+        return query.value(0).toInt();
+    } else {
+        qDebug() << "No valid record found";
+        return 0;
+    }
+}
+
+
+QMap<QString, double> DatabaseManager::ExIn()
+{
+    QMap<QString, double> result;
+    result.insert("Incomes", incomesAmount30days());
+    result.insert("Expenses", expensesAmount30days());
+    for(auto& el: result)
+    {
+        qDebug() << "1: " << el;
+    }
+    return result;
+}
+
+

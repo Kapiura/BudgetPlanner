@@ -10,14 +10,15 @@
 UserPanel::UserPanel(QObject *parent) : QObject{parent}
 {
     _loginPanel = new QWidget;
+    graph = new Graph();
 }
 
 UserPanel::~UserPanel()
 {
+    delete graph;
     delete _loginPanel;
 }
 
-class MainWindow;
 void UserPanel::creatingLoginPanel(QGridLayout *lay, DatabaseManager *db)
 {
     QString queryString = "SELECT name, idu FROM users;";
@@ -76,7 +77,12 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
         QString desc = query.value(4).toString();
         int id = query.value(5).toInt();
 
+        //select goal.u_id, sum(amount),g_id from savings left join goal on g_id=idg where goal.u_id=1 group by g_id, u_id
+
+        //select sum(amount) from savings left join goal on g_id=idg where goal.u_id=1 group by g_id;
+
         QString tempStr = QString("select sum(amount) from savings where g_id=%1;").arg(id);
+        // QString tempStr = QString("select sum(amount) from savings left join goal on g_id=idg where goal.g_id=%1 group by u_id;").arg(id);
         QSqlQuery tempquery(tempStr, db->returnDataBase());
         double tempdouble;
         QProgressBar *amountBar = new QProgressBar;
@@ -191,6 +197,21 @@ void UserPanel::deleteDynamicWidgets(QGridLayout *lay)
         delete item->widget();
         delete item;
     }
+}
+
+void UserPanel::creatingGraph(const QMap<QString, double>& map, QFrame *frame, QString &title)
+{
+    graph->updateGraph(map,frame,title);
+}
+
+void UserPanel::clearGraph()
+{
+graph->clearGraph();
+}
+
+void UserPanel::updateGraph(const QMap<QString, double> &map, QString &title)
+{
+graph->updateGraphWithData(map,title);
 }
 
 void UserPanel::setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc)

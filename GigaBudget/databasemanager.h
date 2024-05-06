@@ -45,6 +45,10 @@ public:
   bool importData(const QString& username, const int& user_id);
   void addJsonObjectToFile(QSqlQuery& query,QTextStream& out);
 
+  int expensesAmount30days();
+  int incomesAmount30days();
+  QMap<QString, double> ExIn();
+
 private:
   QSqlDatabase db;
   // variables required to connect to database
