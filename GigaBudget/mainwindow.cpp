@@ -376,6 +376,10 @@ void MainWindow::on_btnExportData_clicked()
     {
         this->messPopUp("Export has been done successfully","Export");
     }
+    else
+    {
+        this->messPopUp("Something went wrong!","Export");
+    }
 
 }
 
@@ -385,6 +389,10 @@ void MainWindow::on_btnImportData_clicked()
     if(dbHandler->importData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
     {
         this->messPopUp("Import has been done successfulluy","Import");
+    }
+    else
+    {
+        this->messPopUp("Something went wrong!","Import");
     }
 }
 

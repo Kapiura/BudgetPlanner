@@ -9,6 +9,9 @@
 #include <QtSql/QSqlError>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QFileDialog>
+#include <QJsonParseError>
+#include <QJsonObject>
 
 int DatabaseManager::userId = 0;
 QString DatabaseManager::currentUsername = "";
@@ -239,20 +242,73 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
 
 bool DatabaseManager::importData(const QString& username, const int& user_id)
 {
+
+    QFileDialog dialog;
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setWindowTitle("Open File");
+    QString filePath;
+
+    if (dialog.exec()) {
+        QStringList fileNames = dialog.selectedFiles();
+        filePath = fileNames.first();
+        qDebug() << "Selected file path:" << filePath;
+    }
+    if(filePath.endsWith(".json", Qt::CaseInsensitive))
+    {
+        qDebug() << "It is a json file\n";
+    }
+    else
+    {
+        qDebug() << "It isnt a json file\n";
+        return false;
+    }
+
     QSqlQuery query(db);
-    QString fileName = QString(QDir::homePath() + "/BudgetPlanner-data-export-%1.json").arg(username);
-    QFile file(fileName);
+    QFile file(filePath);
     if(!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "Error: cannot open file\n";
     }
-    QTextStream in(&file);
-    while(!in.atEnd())
-    {
-        QString line = in.readLine();
-        qDebug() << line;
-    }
+
+    while (!file.atEnd()) {
+            QByteArray line = file.readLine().trimmed(); // Read and remove any trailing whitespace, including the newline character
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            QJsonParseError jsonError;
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(line, &jsonError);
+            if (jsonError.error != QJsonParseError::NoError) {
+                qDebug() << "Error: failed to parse JSON:" << jsonError.errorString();
+                return 1;
+            }
+
+            if (!jsonDoc.isObject()) {
+                qDebug() << "JSON document is not an object";
+                return 1;
+            }
+
+            QJsonObject jsonObj = jsonDoc.object();
+
+            QString table = jsonObj["table"].toString();
+            QString date = jsonObj["date"].toString();
+            double amount = jsonObj["amount"].toDouble();
+            QString currency = jsonObj["currency"].toString();
+            QString description = jsonObj["description"].toString();
+
+            qDebug() << "Table:" << table;
+            qDebug() << "Date:" << date;
+            qDebug() << "Amount:" << amount;
+            qDebug() << "Currency:" << currency;
+            qDebug() << "Description:" << description;
+        }
+
+
     file.close();
+
+
+
     return true;
 }
 
