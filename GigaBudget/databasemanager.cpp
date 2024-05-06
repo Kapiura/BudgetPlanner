@@ -222,7 +222,7 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
     //goals
     queryString = QString("SELECT JSON_OBJECT"
                           "('goal_amount',goal_amount,'current_amount',current_amount,"
-                          "'currency','currency','description',description,"
+                          "'currency',currency,'description',description,"
                           "'title',title,'table','goal') "
                           "AS json FROM goal WHERE u_id=%1").arg(user_id);
     query.prepare(queryString);
@@ -240,9 +240,19 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
 bool DatabaseManager::importData(const QString& username, const int& user_id)
 {
     QSqlQuery query(db);
-    QFile file;
-    QDesktopServices::openUrl(QUrl("file:///"));
-    // switch case
+    QString fileName = QString(QDir::homePath() + "/BudgetPlanner-data-export-%1.json").arg(username);
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Error: cannot open file\n";
+    }
+    QTextStream in(&file);
+    while(!in.atEnd())
+    {
+        QString line = in.readLine();
+        qDebug() << line;
+    }
+    file.close();
     return true;
 }
 
@@ -255,6 +265,6 @@ void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
         {
             data += query.value(i).toString();
         }
-        out << data.trimmed();
+        out << data.trimmed() << "\n";
     }
 }

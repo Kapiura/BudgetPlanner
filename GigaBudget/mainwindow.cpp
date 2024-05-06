@@ -379,3 +379,12 @@ void MainWindow::on_btnExportData_clicked()
 
 }
 
+
+void MainWindow::on_btnImportData_clicked()
+{
+    if(dbHandler->importData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
+    {
+        this->messPopUp("Import has been done successfulluy","Import");
+    }
+}
+

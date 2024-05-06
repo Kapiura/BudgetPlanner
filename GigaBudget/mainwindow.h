@@ -67,5 +67,6 @@ class MainWindow : public QMainWindow
     void on_deleteButton_clicked();
     void on_userSettingsChange_clicked();
     void on_btnExportData_clicked();
+    void on_btnImportData_clicked();
 };
 #endif // MAINWINDOW_H
