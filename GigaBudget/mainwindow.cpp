@@ -31,9 +31,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // QString title = "Incomes and Expenses";
     // up->clearGraph();
     // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
-    QString title = "Incomes and Expenses";
-    QMap<QString,double> tempMap = dbHandler->ExIn();
-    up->creatingGraph(tempMap,ui->frameExIn,title);
+    // QString title1 = "Incomes and Expenses";
+    // QString title2 = "Expenses";
+    // QString title3 = "Incomes";
+    // QString ex = "expenses";
+    // QString in = "incomes";
+    // QMap<QString,double> ExInMap = dbHandler->ExIn();
+    // QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
+    // QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
+    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
+    // up->creatingGraph(2,InMap,ui->frameIn,title3);
+
+    QString title1 = "Incomes and Expenses";
+    QString title2 = "Expenses";
+    QString title3 = "Incomes";
+    QString ex = "expenses";
+    QString in = "incomes";
+    QMap<QString,double> ExInMap = dbHandler->ExIn();
+    // QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
+    // QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
+    up->creatingGraph(1,ExInMap,ui->frameEx,title2);
+    up->creatingGraph(2,ExInMap,ui->frameIn,title3);
 }
 
 MainWindow::~MainWindow()
@@ -62,6 +82,22 @@ void MainWindow::login()
     this->reloadInExSavGo();
     this->dailyQuote();
 
+    QString title1 = "Incomes and Expenses";
+    QString title2 = "Expenses";
+    QString title3 = "Incomes";
+    QString ex = "expenses";
+    QString in = "incomes";
+    QMap<QString,double> ExInMap = dbHandler->ExIn();
+    QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
+    QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
+    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
+    // up->creatingGraph(2,InMap,ui->frameIn,title3);
+
+    up->updateGraph(0,ExInMap,title1);
+    up->updateGraph(1,ExMap,title2);
+    up->updateGraph(2,InMap,title3);
+
 }
 
 void MainWindow::reloadInExSavGo()
@@ -88,10 +124,25 @@ void MainWindow::reloadInExSavGo()
     // QString title = "Incomes and Expenses";
     // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
     // up->updateGraph(dbHandler->ExIn(),title);
-    QString title = "Incomes and Expenses";
-    QMap<QString,double> tempMap = dbHandler->ExIn();
+    // QString title = "Incomes and Expenses";
+    // QMap<QString,double> tempMap = dbHandler->ExIn();
     // up->creatingGraph(tempMap,ui->frameExIn,title);
-    up->updateGraph(tempMap,title);
+    // up->updateGraph(tempMap,title);
+    QString title1 = "Incomes and Expenses";
+    QString title2 = "Expenses";
+    QString title3 = "Incomes";
+    QString ex = "expenses";
+    QString in = "incomes";
+    QMap<QString,double> ExInMap = dbHandler->ExIn();
+    QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
+    QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
+    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
+    // up->creatingGraph(2,InMap,ui->frameIn,title3);
+
+    up->updateGraph(0,ExInMap,title1);
+    up->updateGraph(1,ExMap,title2);
+    up->updateGraph(2,InMap,title3);
 
 }
 

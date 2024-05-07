@@ -47,6 +47,7 @@ public:
 
   int expensesAmount30days();
   int incomesAmount30days();
+  QMap<QString,double> inExCatAmount(QString& el);
   QMap<QString, double> ExIn();
 
 private:

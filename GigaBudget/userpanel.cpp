@@ -10,12 +10,16 @@
 UserPanel::UserPanel(QObject *parent) : QObject{parent}
 {
     _loginPanel = new QWidget;
-    graph = new Graph();
+    graph = new Graph*[3];
+    for (int i = 0; i < 3; ++i)
+    {
+               graph[i] = new Graph();
+    }
 }
 
 UserPanel::~UserPanel()
 {
-    delete graph;
+    delete[] graph;
     delete _loginPanel;
 }
 
@@ -199,19 +203,19 @@ void UserPanel::deleteDynamicWidgets(QGridLayout *lay)
     }
 }
 
-void UserPanel::creatingGraph(const QMap<QString, double>& map, QFrame *frame, QString &title)
+void UserPanel::creatingGraph(int l,const QMap<QString, double>& map, QFrame *frame, QString &title)
 {
-    graph->updateGraph(map,frame,title);
+    graph[l]->updateGraph(map,frame,title);
 }
 
-void UserPanel::clearGraph()
+void UserPanel::clearGraph(int l)
 {
-graph->clearGraph();
+graph[l]->clearGraph();
 }
 
-void UserPanel::updateGraph(const QMap<QString, double> &map, QString &title)
+void UserPanel::updateGraph(int l,const QMap<QString, double> &map, QString &title)
 {
-graph->updateGraphWithData(map,title);
+graph[l]->updateGraphWithData(map,title);
 }
 
 void UserPanel::setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc)

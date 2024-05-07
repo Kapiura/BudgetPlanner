@@ -34,9 +34,9 @@ class UserPanel : public QObject
 
     void creatingLoginPanel(QGridLayout *lay, DatabaseManager *db);
     void deleteDynamicWidgets(QGridLayout *lay);
-    void creatingGraph(const QMap<QString, double>& map, QFrame *frame, QString &title);
-    void clearGraph();
-    void updateGraph(const QMap<QString, double>& map, QString &title);
+    void creatingGraph(int l,const QMap<QString, double>& map, QFrame *frame, QString &title);
+    void clearGraph(int l);
+    void updateGraph(int l,const QMap<QString, double>& map, QString &title);
     void setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc);
     void listExIn(QString &queryString, QTableView *table, DatabaseManager *dbHandler, Flag flaga);
     bool deleteRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName);
@@ -60,7 +60,7 @@ class UserPanel : public QObject
   private:
     QWidget *_loginPanel;
     QWidget *_goals;
-    Graph* graph;
+    Graph** graph;
 
   signals:
     void login();

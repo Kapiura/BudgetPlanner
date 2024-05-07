@@ -30,12 +30,13 @@ public:
     void updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const QString &title);
     void updateGraph(const QMap<QString, qreal> &data, const QString &title);
     void updateGraphWithData(const QMap<QString, qreal> &data, const QString &title);
+    void colorSlices();
 
-private:
-    QPieSeries *series;
+        private : QPieSeries *series;
     QChart *chart;
     QChartView *chartView;
     QFrame *frame;
+    bool created = false;
 };
 
 #endif // GRAPH_H

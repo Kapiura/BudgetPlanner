@@ -368,7 +368,45 @@ int DatabaseManager::incomesAmount30days()
         return 0;
     }
 }
+ //select sum(amount) from expenses where u_id=1 and category='rent';
 
+QMap<QString,double> DatabaseManager::inExCatAmount(QString& el)
+{
+    QMap<QString, double> result;
+    // QVector<QString> type = {"expenses","incomes"};
+    QSqlQuery query(db);
+    QString queryString;
+    QVector<QString> categories;
+        if(el == "expenses")
+        {
+            categories = {"rent", "groceries", "utilities", "dining", "travel", "work", "toiletries", "household items", "medicines", "other"};
+        }
+        else
+        {
+            categories = {"salary", "bonus", "investment", "savings", "other"};
+        }
+        for(auto& cat: categories)
+        {
+            QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3' AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(el).arg(DatabaseManager::userId).arg(cat);
+            // qDebug() << queryString;
+            query.prepare(queryString);
+            int temp = 0;
+            if(!query.exec())
+            {
+                qDebug() << "Error executing query:" << query.lastError().text();
+            }
+            else
+            {
+                if (query.next())
+                    temp = query.value(0).toInt();
+                qDebug() << temp;
+            }
+
+            result.insert(cat, temp);
+}
+return result;
+
+}
 
 QMap<QString, double> DatabaseManager::ExIn()
 {
