@@ -28,20 +28,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     up->creatingLoginPanel(ui->users, dbHandler);
     this->setDefaultPageIndex();
-    // QString title = "Incomes and Expenses";
-    // up->clearGraph();
-    // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
-    // QString title1 = "Incomes and Expenses";
-    // QString title2 = "Expenses";
-    // QString title3 = "Incomes";
-    // QString ex = "expenses";
-    // QString in = "incomes";
-    // QMap<QString,double> ExInMap = dbHandler->ExIn();
-    // QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
-    // QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
-    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
-    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
-    // up->creatingGraph(2,InMap,ui->frameIn,title3);
 
     QString title1 = "Incomes and Expenses";
     QString title2 = "Expenses";
@@ -49,11 +35,80 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QString ex = "expenses";
     QString in = "incomes";
     QMap<QString,double> ExInMap = dbHandler->ExIn();
-    // QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
-    // QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+
     up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
     up->creatingGraph(1,ExInMap,ui->frameEx,title2);
     up->creatingGraph(2,ExInMap,ui->frameIn,title3);
+
+    QString styleSheet = R"(
+           QPlainTextEdit, QTextEdit, QLineEdit, QComboBox, QDoubleSpinBox {
+               background-color: #ffffff;
+               color: #333;
+               border: 1px solid #aaa;
+               padding: 5px;
+           }
+
+           QComboBox QAbstractItemView {
+               background-color: #ffffff;
+               color: #333;
+               selection-background-color: #4CAF50;
+               selection-color: white;
+           }
+
+           QPushButton {
+               background-color: #4CAF50;
+               color: white;
+               border: none;
+               padding: 10px;
+               border-radius: 5px;
+           }
+
+           QPushButton:hover {
+               background-color: #45a049;
+           }
+
+           QTabWidget::pane {
+               border: 1px solid #ccc;
+               padding: 10px;
+           }
+
+           QTabBar::tab {
+               background: #e0e0e0;
+               color: #333;
+               border: 1px solid #ccc;
+               padding: 10px;
+           }
+
+           QTabBar::tab:selected {
+               background: #d0d0d0;
+           }
+
+           QTableView {
+               background-color: #ffffff;
+               color: #333;
+               border: 1px solid #ccc;
+               gridline-color: #ccc;
+           }
+
+           QTableView::item {
+               padding: 10px;
+           }
+
+           QProgressBar {
+               border: 2px solid #4CAF50;
+               border-radius: 5px;
+               text-align: center;
+               background-color: #f0f0f0;
+               color: #333; /* Ustawienie ciemnego koloru tekstu */
+           }
+
+           QProgressBar::chunk {
+               background-color: #4CAF50;
+               width: 20px;
+           }
+           )";
+
+          setStyleSheet(styleSheet);
 }
 
 MainWindow::~MainWindow()
@@ -78,7 +133,7 @@ MainWindow::~MainWindow()
 void MainWindow::login()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
+    // ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     this->reloadInExSavGo();
     this->dailyQuote();
 
@@ -90,9 +145,6 @@ void MainWindow::login()
     QMap<QString,double> ExInMap = dbHandler->ExIn();
     QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
     QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
-    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
-    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
-    // up->creatingGraph(2,InMap,ui->frameIn,title3);
 
     up->updateGraph(0,ExInMap,title1);
     up->updateGraph(1,ExMap,title2);
@@ -121,13 +173,7 @@ void MainWindow::reloadInExSavGo()
     up->creatingGoals(ui->sumgoal, dbHandler);
     up->currentBudget(ui->summaryCards, dbHandler);
     this->addingCategoriesItems();
-    // QString title = "Incomes and Expenses";
-    // up->creatingGraph(dbHandler->ExIn(),ui->frameExIn,title);
-    // up->updateGraph(dbHandler->ExIn(),title);
-    // QString title = "Incomes and Expenses";
-    // QMap<QString,double> tempMap = dbHandler->ExIn();
-    // up->creatingGraph(tempMap,ui->frameExIn,title);
-    // up->updateGraph(tempMap,title);
+
     QString title1 = "Incomes and Expenses";
     QString title2 = "Expenses";
     QString title3 = "Incomes";
@@ -136,9 +182,7 @@ void MainWindow::reloadInExSavGo()
     QMap<QString,double> ExInMap = dbHandler->ExIn();
     QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
     QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
-    // up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
-    // up->creatingGraph(1,ExMap,ui->frameEx,title2);
-    // up->creatingGraph(2,InMap,ui->frameIn,title3);
+
 
     up->updateGraph(0,ExInMap,title1);
     up->updateGraph(1,ExMap,title2);
@@ -315,7 +359,7 @@ void MainWindow::on_buttonLogout_clicked()
 void MainWindow::on_btnCreateUser_clicked()
 {
 
-    // getting username and description
+    // get username and description
     QString username = ui->newUsername->text();
     QString desc = ui->newDesc->toPlainText();
     // adding user to database
@@ -394,47 +438,40 @@ void MainWindow::on_buttonExpenses_clicked()
 
 void MainWindow::on_deleteButton_clicked()
 {
+    QMessageBox msgBox;
+           msgBox.setWindowTitle("Potwierdzenie");
+           msgBox.setText("Czy na pewno chcesz usunąć użytkownika?");
+           msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+           msgBox.setDefaultButton(QMessageBox::No);
+           int ret = msgBox.exec();
 
-    // dialogWindow->show();
-    if (dialogWindow->exec())
-    {
-        qDebug() << "deleting";
-        if (dbHandler->deleteUser())
-        {
-            qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
-            this->setDefaultPageIndex();
-            up->deleteDynamicWidgets(ui->users);
-            up->creatingLoginPanel(ui->users, dbHandler);
-        }
-        else
-            qDebug() << "something gone wrong during deleting user";
-    }
-    else
-        qDebug() << "Deleting stopped";
-    }
+           switch (ret) {
+           case QMessageBox::Yes:
+               qDebug() << "deleting";
+               if (dbHandler->deleteUser()) {
+                   qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
+                   this->setDefaultPageIndex();
+                   up->deleteDynamicWidgets(ui->users);
+                   up->creatingLoginPanel(ui->users, dbHandler);
+
+                   QMessageBox::information(this, "Usunięto użytkownika", QString("Użytkownik %1 został pomyślnie usunięty.").arg(DatabaseManager::userId));
+               } else {
+                   qDebug() << "something went wrong during deleting user";
+                   QMessageBox::critical(this, "Błąd", "Coś poszło nie tak podczas usuwania użytkownika.");
+               }
+               break;
+           case QMessageBox::No:
+               qDebug() << "Deleting stopped";
+               break;
+           default:
+               // should never be reached
+               break;
+           }
+       }
+
 // -----------------------------------------
 // -----------------------------------------
 
-void MainWindow::on_userSettingsChange_clicked()
-{
-    QString newName = ui->userSettingsUsername->text();
-    QString newDesc = ui->userSettingsDesc->toPlainText();
-    QString queryString = QString("Update users SET name='%1', description='%2' where idu = %3")
-                              .arg(newName)
-                              .arg(newDesc)
-                              .arg(DatabaseManager::getUserId());
-    QSqlQuery query(dbHandler->returnDataBase());
-    query.prepare(queryString);
-    if (query.exec())
-    {
-        DatabaseManager::currentUsername = newName;
-        qDebug() << query.lastError().text();
-        up->deleteDynamicWidgets(ui->users);
-        up->creatingLoginPanel(ui->users, dbHandler);
-        ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
-        this->reloadInExSavGo();
-    }
-}
 
 void MainWindow::on_btnExportData_clicked()
 {
@@ -456,6 +493,7 @@ void MainWindow::on_btnImportData_clicked()
     if(dbHandler->importData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
     {
         this->messPopUp("Import has been done successfulluy","Import");
+        this->reloadInExSavGo();
     }
     else
     {

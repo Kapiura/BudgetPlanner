@@ -66,7 +66,6 @@ class MainWindow : public QMainWindow
     void on_goalAdd_clicked();
     void on_savingsButton_clicked();
     void on_deleteButton_clicked();
-    void on_userSettingsChange_clicked();
     void on_btnExportData_clicked();
     void on_btnImportData_clicked();
 };

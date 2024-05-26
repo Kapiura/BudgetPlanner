@@ -1,5 +1,3 @@
-// graph.h
-
 #ifndef GRAPH_H
 #define GRAPH_H
 
@@ -20,7 +18,7 @@ public:
     ~Graph();
 
     void setFrame(QFrame *frame);
-    QChartView *getView(); // Deklaracja metody getView()
+    QChartView *getView();
 
     void addSlice(const QString &label, qreal value);
     void addDataFromMap(const QMap<QString, qreal> &data);
@@ -31,12 +29,14 @@ public:
     void updateGraph(const QMap<QString, qreal> &data, const QString &title);
     void updateGraphWithData(const QMap<QString, qreal> &data, const QString &title);
     void colorSlices();
+    // void setSliceColor(Q);
 
-        private : QPieSeries *series;
+private:
+    QPieSeries *series;
     QChart *chart;
     QChartView *chartView;
     QFrame *frame;
-    bool created = false;
+    bool created;
 };
 
 #endif // GRAPH_H

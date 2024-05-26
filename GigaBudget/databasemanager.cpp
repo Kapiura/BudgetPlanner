@@ -205,7 +205,31 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
     }
     QTextStream out(&file);
     QString queryString;
-    std::array<QString, 3> tables = {"expenses", "incomes", "savings"};
+    std::array<QString, 2> tables = {"expenses", "incomes"};
+    //goals
+    queryString = QString("SELECT JSON_OBJECT"
+                          "('goal_amount',goal_amount,'current_amount',current_amount,"
+                          "'currency',currency,'description',description,"
+                          "'title',title,'table','goal') "
+                          "AS json FROM goal WHERE u_id=%1").arg(user_id);
+    query.prepare(queryString);
+    if(!query.exec())
+    {
+        qDebug() << "Error: query executing - goals\n";
+        return false;
+    }
+    this->addJsonObjectToFile(query,out);
+    // savings
+    queryString = QString("SELECT JSON_OBJECT('amount',savings.amount,'currency',savings.currency,"
+                          "'date',savings.date,'description',savings.description,'table','savings','title',title) "
+                          "AS json FROM savings LEFT JOIN goal on idg=g_id WHERE savings.u_id=%1;").arg(user_id);
+    query.prepare(queryString);
+    if(!query.exec())
+    {
+        qDebug() << "Error: query executing - savings\n";
+        return false;
+    }
+    this->addJsonObjectToFile(query,out);
     for (auto &el : tables)
     {
         queryString =
@@ -219,25 +243,11 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
         qDebug() << el;
         if (!query.exec())
         {
-            qDebug() << "Error: query executing\n";
+            qDebug() << "Error: query executing - " << el << "\n";
             return false;
         }
      this->addJsonObjectToFile(query,out);
     }
-    //goals
-    queryString = QString("SELECT JSON_OBJECT"
-                          "('goal_amount',goal_amount,'current_amount',current_amount,"
-                          "'currency',currency,'description',description,"
-                          "'title',title,'table','goal') "
-                          "AS json FROM goal WHERE u_id=%1").arg(user_id);
-    query.prepare(queryString);
-    if(!query.exec())
-    {
-        qDebug() << "Error: query executing\n";
-        return false;
-    }
-    this->addJsonObjectToFile(query,out);
-
     file.close();
     return true;
 }
@@ -298,12 +308,59 @@ bool DatabaseManager::importData(const QString& username, const int& user_id)
             double amount = jsonObj["amount"].toDouble();
             QString currency = jsonObj["currency"].toString();
             QString description = jsonObj["description"].toString();
+            QString title = jsonObj["title"].toString();
+            double goal_amount = jsonObj["goal_amount"].toDouble();
+            // int gid = jsonObj["g_id"].toInt();
 
-            qDebug() << "Table:" << table;
-            qDebug() << "Date:" << date;
-            qDebug() << "Amount:" << amount;
-            qDebug() << "Currency:" << currency;
-            qDebug() << "Description:" << description;
+
+            if(table == "goal")
+            {
+                QString queryStr = QString("INSERT INTO %1 (u_id, goal_amount, current_amount, currency, title,description) VALUES (%2,%3,0,'%4','%5','%6');")
+                        .arg(table).arg(getUserId()).arg(goal_amount).arg(currency).arg(title).arg(description);
+                query.prepare(queryStr);
+                if(!query.exec())
+                {
+                    qDebug() << "Error: unable to exec query - goal";
+                    return 1;
+                }
+            }
+            else if(table == "expenses" || table == "incomes")
+            {
+                QString queryStr = QString("INSERT INTO %1 (u_id, amount, currency, date, description) VALUES (%2,%3,'%4','%5','%6');").arg(table).arg(getUserId()).arg(amount).arg(currency).arg(date).arg(description);
+                query.prepare(queryStr);
+                if(!query.exec())
+                {
+                    qDebug() << "Error: unable to exec query - expenses or incomes";
+                    return 1;
+                }
+            }
+            else
+            {
+                // > select idg from goal where u_id =48 and title Like
+                //     ->
+                //     -> 'FF';
+                QString queryStr = QString("SELECT idg FROM goal WHERE u_id = %1 AND title LIKE '%2';")
+                        .arg(getUserId()).arg(title);
+                query.prepare(queryStr);
+                if(!query.exec())
+                {
+                    qDebug() << "Error: unable to exec query - geting gid";
+                    return 1;
+                }
+                int gid = 0;
+                if (query.next())
+                {
+                        gid = query.value(0).toInt();
+                    }
+                queryStr = QString("INSERT INTO %1 (u_id, g_id, amount, currency, date, description) VALUES (%2,%3,%4,'%5','%6','%7');")
+                        .arg(table).arg(getUserId()).arg(gid).arg(amount).arg(currency).arg(date).arg(description);
+                query.prepare(queryStr);
+                if(!query.exec())
+                {
+                    qDebug() << "Error: unable to exec query - savings";
+                    return 1;
+                }
+            }
         }
 
 

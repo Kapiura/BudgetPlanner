@@ -10,6 +10,8 @@ Graph::Graph(QObject *parent)
     chart = new QChart();
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
+    created = false;
+    chart->setBackgroundBrush(QBrush(QColor("#f0f0f0")));
 }
 
 Graph::~Graph()
@@ -22,8 +24,8 @@ Graph::~Graph()
 
 void Graph::updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const QString &title)
 {
-    if (frame->layout()) {
-
+    if (frame->layout())
+    {
         QLayout *existingLayout = frame->layout();
         delete existingLayout;
     }
@@ -37,7 +39,8 @@ void Graph::updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const Q
     series->clear();
 
 
-    for (auto it = data.begin(); it != data.end(); ++it) {
+    for (auto it = data.begin(); it != data.end(); ++it)
+    {
         series->append(it.key(), it.value());
     }
     this->colorSlices();
@@ -63,7 +66,8 @@ void Graph::updateGraphWithData(const QMap<QString, qreal> &data, const QString 
     series->clear();
 
 
-    for (auto it = data.begin(); it != data.end(); ++it) {
+    for (auto it = data.begin(); it != data.end(); ++it)
+    {
         series->append(it.key(), it.value());
     }
 this->colorSlices();
@@ -75,8 +79,6 @@ this->colorSlices();
     chart->legend()->setAlignment(Qt::AlignRight);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-
-    // chart->addSeries(series);
 }
 
 void Graph::clearGraph()
@@ -95,13 +97,12 @@ void Graph::colorSlices()
 {
     if(created == false)
     {
-        QPieSlice* slice;
-        foreach(slice,series->slices())
+        for(auto& el : series->slices())
         {
-            slice->setBrush(QColor(rand()%256,rand()%256,rand()%256));
+            QColor cl(255,255,0,255);
+            el->setColor(cl);
+
         }
         created = true;
     }
-
 }
-
