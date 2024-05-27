@@ -12,7 +12,7 @@
 class Graph : public QObject
 {
     Q_OBJECT
-public:
+  public:
     explicit Graph(QObject *parent = nullptr);
 
     ~Graph();
@@ -31,7 +31,7 @@ public:
     void colorSlices();
     // void setSliceColor(Q);
 
-private:
+  private:
     QPieSeries *series;
     QChart *chart;
     QChartView *chartView;

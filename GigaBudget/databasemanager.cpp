@@ -1,17 +1,17 @@
 #include "databasemanager.h"
 #include <QDebug>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QFileDialog>
+#include <QJsonObject>
+#include <QJsonParseError>
 #include <QProcess>
 #include <QSqlRecord>
 #include <QString>
+#include <QUrl>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
-#include <QUrl>
-#include <QDesktopServices>
-#include <QFileDialog>
-#include <QJsonParseError>
-#include <QJsonObject>
 
 int DatabaseManager::userId = 0;
 QString DatabaseManager::currentUsername = "";
@@ -89,12 +89,11 @@ void DatabaseManager::addIncomes(int &id, double &amount, QString &currency, QSt
     QSqlQuery query(queryString, db);
 }
 
-bool DatabaseManager::addUser(QString &name, QString &desc)
+bool DatabaseManager::addUser(QString &name)
 {
-    QString queryString = QString("INSERT INTO users (name,description) "
-                                  "VALUES ('%1', '%2')")
-                              .arg(name)
-                              .arg(desc);
+    QString queryString = QString("INSERT INTO users (name) "
+                                  "VALUES ('%1')")
+                              .arg(name);
     QSqlQuery query(db);
     query.prepare(queryString);
     if (query.exec())
@@ -124,9 +123,9 @@ void DatabaseManager::addGoal(QString &title, double &amount, QString &currency,
 
 void DatabaseManager::addSav(QString &title, double &amount, QString &currency, QString &desc)
 {
-    //SELECT idg FROM goal LEFT JOIN users ON idu=u_id where title="Taczka" and u_id=21;
-    //QString queryString = QString("SELECT idg FROM goal WHERE title = '%1'").arg(title);
-    QString queryString = QString("SELECT idg FROM goal LEFT JOIN users ON idu=u_id where title='%2' and u_id=%1;").arg(DatabaseManager::userId).arg(title);
+    QString queryString = QString("SELECT idg FROM goal LEFT JOIN users ON idu=u_id where title='%2' and u_id=%1;")
+                              .arg(DatabaseManager::userId)
+                              .arg(title);
     QSqlQuery query(queryString, db);
     if (query.next())
     {
@@ -159,7 +158,6 @@ bool DatabaseManager::deleteUser()
         QString tables[4] = {"savings", "incomes", "expenses", "goal"};
         for (auto &tab : tables)
         {
-            qDebug() << "Deleting " << tab;
             this->deleteData(tab);
         }
         if (query.exec())
@@ -206,53 +204,52 @@ bool DatabaseManager::exportData(const QString &username, const int &user_id)
     QTextStream out(&file);
     QString queryString;
     std::array<QString, 2> tables = {"expenses", "incomes"};
-    //goals
+    // goals
     queryString = QString("SELECT JSON_OBJECT"
                           "('goal_amount',goal_amount,'current_amount',current_amount,"
                           "'currency',currency,'description',description,"
                           "'title',title,'table','goal') "
-                          "AS json FROM goal WHERE u_id=%1").arg(user_id);
+                          "AS json FROM goal WHERE u_id=%1")
+                      .arg(user_id);
     query.prepare(queryString);
-    if(!query.exec())
+    if (!query.exec())
     {
         qDebug() << "Error: query executing - goals\n";
         return false;
     }
-    this->addJsonObjectToFile(query,out);
+    this->addJsonObjectToFile(query, out);
     // savings
     queryString = QString("SELECT JSON_OBJECT('amount',savings.amount,'currency',savings.currency,"
                           "'date',savings.date,'description',savings.description,'table','savings','title',title) "
-                          "AS json FROM savings LEFT JOIN goal on idg=g_id WHERE savings.u_id=%1;").arg(user_id);
+                          "AS json FROM savings LEFT JOIN goal on idg=g_id WHERE savings.u_id=%1;")
+                      .arg(user_id);
     query.prepare(queryString);
-    if(!query.exec())
+    if (!query.exec())
     {
         qDebug() << "Error: query executing - savings\n";
         return false;
     }
-    this->addJsonObjectToFile(query,out);
+    this->addJsonObjectToFile(query, out);
     for (auto &el : tables)
     {
-        queryString =
-            QString(
-                "SELECT JSON_OBJECT"
-                "('amount',amount,'currency',currency,'date',date,'description',description,'table','%1')"
-                " AS json FROM %1 WHERE u_id=%2;")
-                .arg(el)
-                .arg(user_id);
+        queryString = QString("SELECT JSON_OBJECT"
+                              "('amount',amount,'currency',currency,'date',date,'description',description,'table','%1')"
+                              " AS json FROM %1 WHERE u_id=%2;")
+                          .arg(el)
+                          .arg(user_id);
         query.prepare(queryString);
-        qDebug() << el;
         if (!query.exec())
         {
             qDebug() << "Error: query executing - " << el << "\n";
             return false;
         }
-     this->addJsonObjectToFile(query,out);
+        this->addJsonObjectToFile(query, out);
     }
     file.close();
     return true;
 }
 
-bool DatabaseManager::importData(const QString& username, const int& user_id)
+bool DatabaseManager::importData(const QString &username, const int &user_id)
 {
 
     QFileDialog dialog;
@@ -260,12 +257,13 @@ bool DatabaseManager::importData(const QString& username, const int& user_id)
     dialog.setWindowTitle("Open File");
     QString filePath;
 
-    if (dialog.exec()) {
+    if (dialog.exec())
+    {
         QStringList fileNames = dialog.selectedFiles();
         filePath = fileNames.first();
         qDebug() << "Selected file path:" << filePath;
     }
-    if(filePath.endsWith(".json", Qt::CaseInsensitive))
+    if (filePath.endsWith(".json", Qt::CaseInsensitive))
     {
         qDebug() << "It is a json file\n";
     }
@@ -277,96 +275,112 @@ bool DatabaseManager::importData(const QString& username, const int& user_id)
 
     QSqlQuery query(db);
     QFile file(filePath);
-    if(!file.open(QIODevice::ReadOnly))
+    if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "Error: cannot open file\n";
     }
 
-    while (!file.atEnd()) {
-            QByteArray line = file.readLine().trimmed();
+    while (!file.atEnd())
+    {
+        QByteArray line = file.readLine().trimmed();
 
-            if (line.isEmpty()) {
-                continue;
-            }
-
-            QJsonParseError jsonError;
-            QJsonDocument jsonDoc = QJsonDocument::fromJson(line, &jsonError);
-            if (jsonError.error != QJsonParseError::NoError) {
-                qDebug() << "Error: failed to parse JSON:" << jsonError.errorString();
-                return 1;
-            }
-
-            if (!jsonDoc.isObject()) {
-                qDebug() << "JSON document is not an object";
-                return 1;
-            }
-
-            QJsonObject jsonObj = jsonDoc.object();
-
-            QString table = jsonObj["table"].toString();
-            QString date = jsonObj["date"].toString();
-            double amount = jsonObj["amount"].toDouble();
-            QString currency = jsonObj["currency"].toString();
-            QString description = jsonObj["description"].toString();
-            QString title = jsonObj["title"].toString();
-            double goal_amount = jsonObj["goal_amount"].toDouble();
-            // int gid = jsonObj["g_id"].toInt();
-
-
-            if(table == "goal")
-            {
-                QString queryStr = QString("INSERT INTO %1 (u_id, goal_amount, current_amount, currency, title,description) VALUES (%2,%3,0,'%4','%5','%6');")
-                        .arg(table).arg(getUserId()).arg(goal_amount).arg(currency).arg(title).arg(description);
-                query.prepare(queryStr);
-                if(!query.exec())
-                {
-                    qDebug() << "Error: unable to exec query - goal";
-                    return 1;
-                }
-            }
-            else if(table == "expenses" || table == "incomes")
-            {
-                QString queryStr = QString("INSERT INTO %1 (u_id, amount, currency, date, description) VALUES (%2,%3,'%4','%5','%6');").arg(table).arg(getUserId()).arg(amount).arg(currency).arg(date).arg(description);
-                query.prepare(queryStr);
-                if(!query.exec())
-                {
-                    qDebug() << "Error: unable to exec query - expenses or incomes";
-                    return 1;
-                }
-            }
-            else
-            {
-                // > select idg from goal where u_id =48 and title Like
-                //     ->
-                //     -> 'FF';
-                QString queryStr = QString("SELECT idg FROM goal WHERE u_id = %1 AND title LIKE '%2';")
-                        .arg(getUserId()).arg(title);
-                query.prepare(queryStr);
-                if(!query.exec())
-                {
-                    qDebug() << "Error: unable to exec query - geting gid";
-                    return 1;
-                }
-                int gid = 0;
-                if (query.next())
-                {
-                        gid = query.value(0).toInt();
-                    }
-                queryStr = QString("INSERT INTO %1 (u_id, g_id, amount, currency, date, description) VALUES (%2,%3,%4,'%5','%6','%7');")
-                        .arg(table).arg(getUserId()).arg(gid).arg(amount).arg(currency).arg(date).arg(description);
-                query.prepare(queryStr);
-                if(!query.exec())
-                {
-                    qDebug() << "Error: unable to exec query - savings";
-                    return 1;
-                }
-            }
+        if (line.isEmpty())
+        {
+            continue;
         }
 
+        QJsonParseError jsonError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(line, &jsonError);
+        if (jsonError.error != QJsonParseError::NoError)
+        {
+            qDebug() << "Error: failed to parse JSON:" << jsonError.errorString();
+            return 1;
+        }
+
+        if (!jsonDoc.isObject())
+        {
+            qDebug() << "JSON document is not an object";
+            return 1;
+        }
+
+        QJsonObject jsonObj = jsonDoc.object();
+
+        QString table = jsonObj["table"].toString();
+        QString date = jsonObj["date"].toString();
+        double amount = jsonObj["amount"].toDouble();
+        QString currency = jsonObj["currency"].toString();
+        QString description = jsonObj["description"].toString();
+        QString title = jsonObj["title"].toString();
+        double goal_amount = jsonObj["goal_amount"].toDouble();
+
+        if (table == "goal")
+        {
+            QString queryStr = QString("INSERT INTO %1 (u_id, goal_amount, current_amount, currency, "
+                                       "title,description) VALUES (%2,%3,0,'%4','%5','%6');")
+                                   .arg(table)
+                                   .arg(getUserId())
+                                   .arg(goal_amount)
+                                   .arg(currency)
+                                   .arg(title)
+                                   .arg(description);
+            query.prepare(queryStr);
+            if (!query.exec())
+            {
+                qDebug() << "Error: unable to exec query - goal";
+                return 1;
+            }
+        }
+        else if (table == "expenses" || table == "incomes")
+        {
+            QString queryStr =
+                QString("INSERT INTO %1 (u_id, amount, currency, date, description) VALUES (%2,%3,'%4','%5','%6');")
+                    .arg(table)
+                    .arg(getUserId())
+                    .arg(amount)
+                    .arg(currency)
+                    .arg(date)
+                    .arg(description);
+            query.prepare(queryStr);
+            if (!query.exec())
+            {
+                qDebug() << "Error: unable to exec query - expenses or incomes";
+                return 1;
+            }
+        }
+        else
+        {
+            QString queryStr =
+                QString("SELECT idg FROM goal WHERE u_id = %1 AND title LIKE '%2';").arg(getUserId()).arg(title);
+            query.prepare(queryStr);
+            if (!query.exec())
+            {
+                qDebug() << "Error: unable to exec query - geting gid";
+                return 1;
+            }
+            int gid = 0;
+            if (query.next())
+            {
+                gid = query.value(0).toInt();
+            }
+            queryStr = QString("INSERT INTO %1 (u_id, g_id, amount, currency, date, description) VALUES "
+                               "(%2,%3,%4,'%5','%6','%7');")
+                           .arg(table)
+                           .arg(getUserId())
+                           .arg(gid)
+                           .arg(amount)
+                           .arg(currency)
+                           .arg(date)
+                           .arg(description);
+            query.prepare(queryStr);
+            if (!query.exec())
+            {
+                qDebug() << "Error: unable to exec query - savings";
+                return 1;
+            }
+        }
+    }
 
     file.close();
-
-
 
     return true;
 }
@@ -386,20 +400,23 @@ void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
 
 int DatabaseManager::expensesAmount30days()
 {
-    QString queryString = QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(DatabaseManager::userId);
+    QString queryString =
+        QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+            .arg(DatabaseManager::userId);
     QSqlQuery query(db);
     query.prepare(queryString);
-    if(!query.exec())
+    if (!query.exec())
     {
         qDebug() << "Error: unable to exec query";
         return 0;
     }
 
-    // Sprawdź, czy obiekt QSqlQuery jest ustawiony na rekord
-    if(query.next()) {
-        // Odczytaj wartość z obiektu QSqlQuery
+    if (query.next())
+    {
         return query.value(0).toInt();
-    } else {
+    }
+    else
+    {
         qDebug() << "No valid record found";
         return 0;
     }
@@ -407,62 +424,64 @@ int DatabaseManager::expensesAmount30days()
 
 int DatabaseManager::incomesAmount30days()
 {
-    QString queryString = QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(DatabaseManager::userId);
+    QString queryString =
+        QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+            .arg(DatabaseManager::userId);
     QSqlQuery query(db);
     query.prepare(queryString);
-    if(!query.exec())
+    if (!query.exec())
     {
         qDebug() << "Error: unable to exec query";
         return 0;
     }
 
-    // Sprawdź, czy obiekt QSqlQuery jest ustawiony na rekord
-    if(query.next()) {
-        // Odczytaj wartość z obiektu QSqlQuery
+    if (query.next())
+    {
         return query.value(0).toInt();
-    } else {
+    }
+    else
+    {
         qDebug() << "No valid record found";
         return 0;
     }
 }
- //select sum(amount) from expenses where u_id=1 and category='rent';
 
-QMap<QString,double> DatabaseManager::inExCatAmount(QString& el)
+QMap<QString, double> DatabaseManager::inExCatAmount(QString &el)
 {
     QMap<QString, double> result;
-    // QVector<QString> type = {"expenses","incomes"};
     QSqlQuery query(db);
     QString queryString;
     QVector<QString> categories;
-        if(el == "expenses")
+    if (el == "expenses")
+    {
+        categories = {"rent", "groceries",  "utilities",       "dining",    "travel",
+                      "work", "toiletries", "household items", "medicines", "other"};
+    }
+    else
+    {
+        categories = {"salary", "bonus", "investment", "savings", "other"};
+    }
+    for (auto &cat : categories)
+    {
+        QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3' AND date >= "
+                                      "CURRENT_DATE - INTERVAL 30 DAY;")
+                                  .arg(el)
+                                  .arg(DatabaseManager::userId)
+                                  .arg(cat);
+        query.prepare(queryString);
+        int temp = 0;
+        if (!query.exec())
         {
-            categories = {"rent", "groceries", "utilities", "dining", "travel", "work", "toiletries", "household items", "medicines", "other"};
+            qDebug() << "Error executing query:" << query.lastError().text();
         }
         else
         {
-            categories = {"salary", "bonus", "investment", "savings", "other"};
+            if (query.next())
+                temp = query.value(0).toInt();
         }
-        for(auto& cat: categories)
-        {
-            QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3' AND date >= CURRENT_DATE - INTERVAL 30 DAY;").arg(el).arg(DatabaseManager::userId).arg(cat);
-            // qDebug() << queryString;
-            query.prepare(queryString);
-            int temp = 0;
-            if(!query.exec())
-            {
-                qDebug() << "Error executing query:" << query.lastError().text();
-            }
-            else
-            {
-                if (query.next())
-                    temp = query.value(0).toInt();
-                qDebug() << temp;
-            }
-
-            result.insert(cat, temp);
-}
-return result;
-
+        result.insert(cat, temp);
+    }
+    return result;
 }
 
 QMap<QString, double> DatabaseManager::ExIn()
@@ -470,11 +489,5 @@ QMap<QString, double> DatabaseManager::ExIn()
     QMap<QString, double> result;
     result.insert("Incomes", incomesAmount30days());
     result.insert("Expenses", expensesAmount30days());
-    for(auto& el: result)
-    {
-        qDebug() << "1: " << el;
-    }
     return result;
 }
-
-

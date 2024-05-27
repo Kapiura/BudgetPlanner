@@ -34,9 +34,11 @@ class MainWindow : public QMainWindow
     {
         return ui->stackedWidget->currentIndex();
     };
-    Ui::MainWindow* returnUi(){return ui;};
+    Ui::MainWindow *returnUi()
+    {
+        return ui;
+    };
 
-    // void listExIn(QString &queryString, QTableView *table);
     void listSav(QString &queryString, QTableView *table);
 
     DatabaseManager *returnDb()
@@ -54,7 +56,7 @@ class MainWindow : public QMainWindow
     QMessageBox *messDialog;
 
     void dailyQuote();
-    void messPopUp(const QString& text, const QString& title);
+    void messPopUp(const QString &text, const QString &title);
 
   private slots:
     void login();

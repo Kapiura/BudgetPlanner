@@ -1,5 +1,7 @@
 #include "userpanel.h"
 #include "databasemanager.h"
+#include "editdialog.h"
+#include <QDialog>
 #include <QMap>
 #include <QMessageBox>
 #include <QProgressBar>
@@ -10,10 +12,10 @@
 UserPanel::UserPanel(QObject *parent) : QObject{parent}
 {
     _loginPanel = new QWidget;
-    graph = new Graph*[3];
+    graph = new Graph *[3];
     for (int i = 0; i < 3; ++i)
     {
-               graph[i] = new Graph();
+        graph[i] = new Graph();
     }
 }
 
@@ -72,21 +74,19 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
     QSqlQuery query(db->returnDataBase());
     query.prepare(queryString);
     query.exec();
+
+    int row = 0;
+    int col = 0;
+
     while (query.next())
     {
         QString title = query.value(0).toString();
         double goal_amount = query.value(1).toDouble();
-        // double current_amount = query.value(2).toDouble();
         QString currency = query.value(3).toString();
         QString desc = query.value(4).toString();
         int id = query.value(5).toInt();
 
-        //select goal.u_id, sum(amount),g_id from savings left join goal on g_id=idg where goal.u_id=1 group by g_id, u_id
-
-        //select sum(amount) from savings left join goal on g_id=idg where goal.u_id=1 group by g_id;
-
         QString tempStr = QString("select sum(amount) from savings where g_id=%1;").arg(id);
-        // QString tempStr = QString("select sum(amount) from savings left join goal on g_id=idg where goal.g_id=%1 group by u_id;").arg(id);
         QSqlQuery tempquery(tempStr, db->returnDataBase());
         double tempdouble;
         QProgressBar *amountBar = new QProgressBar;
@@ -96,29 +96,32 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
             qDebug() << tempdouble;
         }
         else
+        {
             tempdouble = 0;
+        }
         tempStr = QString("update goal set current_value=%1 where idg=%2;").arg(tempdouble).arg(id);
 
         QString amount = QString("%1 / %2").arg(tempdouble).arg(goal_amount);
 
         QWidget *container = new QWidget;
-        QHBoxLayout *layout = new QHBoxLayout;
+        QVBoxLayout *layout = new QVBoxLayout;
 
         QLabel *labelTitle = new QLabel(title);
-        QLabel *labelDesc = new QLabel(desc);
-        QLabel *labelAmount = new QLabel(amount);
 
         amountBar->setOrientation(Qt::Horizontal);
         amountBar->setRange(0, goal_amount);
         amountBar->setValue(tempdouble);
 
         QPushButton *deleteButton = new QPushButton("Delete");
+        QPushButton *detailsButton = new QPushButton("Szczegóły");
+
+        QHBoxLayout *buttonLayout = new QHBoxLayout;
+        buttonLayout->addWidget(deleteButton);
+        buttonLayout->addWidget(detailsButton);
 
         layout->addWidget(labelTitle);
-        layout->addWidget(labelDesc);
-        layout->addWidget(labelAmount);
         layout->addWidget(amountBar);
-        layout->addWidget(deleteButton);
+        layout->addLayout(buttonLayout);
 
         connect(deleteButton, &QPushButton::clicked, [=]() {
             QString tableName = "goal";
@@ -130,8 +133,37 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
             emit reloadInExSavGo();
         });
 
+        connect(detailsButton, &QPushButton::clicked, [=]() {
+            QDialog *detailsDialog = new QDialog();
+            detailsDialog->setWindowTitle("Szczegóły celu");
+
+            QVBoxLayout *dialogLayout = new QVBoxLayout;
+            QLabel *detailsLabel =
+                new QLabel(QString("Tytuł: %1\nDocelowa kwota: %2 %3\nAktualna kwota: %4 %3\nOpis: %5")
+                               .arg(title)
+                               .arg(goal_amount)
+                               .arg(currency)
+                               .arg(tempdouble)
+                               .arg(desc));
+            dialogLayout->addWidget(detailsLabel);
+
+            QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+            connect(buttonBox, &QDialogButtonBox::accepted, detailsDialog, &QDialog::accept);
+            dialogLayout->addWidget(buttonBox);
+
+            detailsDialog->setLayout(dialogLayout);
+            detailsDialog->exec();
+        });
+
         container->setLayout(layout);
-        area->addWidget(container);
+        area->addWidget(container, row, col);
+
+        col++;
+        if (col >= 2)
+        {
+            col = 0;
+            row++;
+        }
 
         if (tempdouble >= goal_amount)
         {
@@ -203,19 +235,19 @@ void UserPanel::deleteDynamicWidgets(QGridLayout *lay)
     }
 }
 
-void UserPanel::creatingGraph(int l,const QMap<QString, double>& map, QFrame *frame, QString &title)
+void UserPanel::creatingGraph(int l, const QMap<QString, double> &map, QFrame *frame, QString &title)
 {
-    graph[l]->updateGraph(map,frame,title);
+    graph[l]->updateGraph(map, frame, title);
 }
 
 void UserPanel::clearGraph(int l)
 {
-graph[l]->clearGraph();
+    graph[l]->clearGraph();
 }
 
-void UserPanel::updateGraph(int l,const QMap<QString, double> &map, QString &title)
+void UserPanel::updateGraph(int l, const QMap<QString, double> &map, QString &title)
 {
-graph[l]->updateGraphWithData(map,title);
+    graph[l]->updateGraphWithData(map, title);
 }
 
 void UserPanel::setUserSettings(DatabaseManager *db, QLineEdit *username, QTextEdit *desc)
@@ -276,35 +308,66 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
             }
         }
         table->setModel(model);
-        for (int i = 0; i < model->rowCount(); i++)
+
+        int rowHeight = 40;
+        for (int row = 0; row < model->rowCount(); ++row)
+        {
+            table->setRowHeight(row, rowHeight);
+        }
+
+        table->resizeColumnsToContents();
+
+        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+        for (int i = 0; i < model->rowCount(); ++i)
         {
             QPushButton *mod = new QPushButton();
             mod->setText("Modify");
+            mod->setFixedHeight(rowHeight - 10); // Adjust button height
             table->setIndexWidget(model->index(i, 5), mod);
-            connect(mod, &QPushButton::clicked, [=]()
-            {
+            QObject::connect(mod, &QPushButton::clicked, [=]() {
                 QString tableName;
                 QString ide;
+                auto flag = EditDialog::Expenses;
                 if (flaga == Expenses)
                 {
                     tableName = "expenses";
                     ide = "ide";
+                    flag = EditDialog::Expenses;
                 }
                 else
                 {
                     tableName = "incomes";
                     ide = "idi";
+                    flag = EditDialog::Incomes;
                 }
-                std::array<QString, 5> data = this->getRowData(model,i);
+                std::array<QString, 5> dataArray = this->getRowData(model, i);
 
-                this->updateRecord(tableName, ides[i], dbHandler, ide, data);
-                emit reloadInExSavGo();
+                QStringList dataList;
+                for (const auto &item : dataArray)
+                {
+                    dataList.append(item);
+                }
+
+                EditDialog *dialog = new EditDialog(flag);
+                dialog->setData(dataList);
+
+                if (dialog->exec() == QDialog::Accepted)
+                {
+                    QStringList newData = dialog->getData();
+                    std::array<QString, 5> newDataArray = {newData[0], newData[1], newData[2], newData[3], newData[4]};
+                    this->updateRecord(tableName, ides[i], dbHandler, ide, newDataArray);
+                    emit reloadInExSavGo();
+                }
+                delete dialog;
             });
 
             QPushButton *del = new QPushButton();
             del->setText("Delete");
+            del->setFixedHeight(rowHeight - 10);
             table->setIndexWidget(model->index(i, 6), del);
-            connect(del, &QPushButton::clicked, [=]() {
+            QObject::connect(del, &QPushButton::clicked, [=]() {
                 qDebug() << "del -> " << i << " ide: " << ides[i];
                 QString tableName;
                 QString ide;
@@ -329,7 +392,7 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
         QString tempQuery = "SELECT * FROM GOAL;";
         QSqlQuery query(dbHandler->returnDataBase());
         query.prepare(tempQuery);
-        if(!query.exec())
+        if (!query.exec())
         {
             QStringList headers = {"Amount", "Currency", "Goal", "Date", "Description", "Modify", "Delete"};
             query.prepare(queryString);
@@ -361,33 +424,67 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
                 }
             }
             table->setModel(model);
-            for (int i = 0; i < model->rowCount(); i++)
+
+            int rowHeight = 40;
+            for (int row = 0; row < model->rowCount(); ++row)
+            {
+                table->setRowHeight(row, rowHeight);
+            }
+
+            table->resizeColumnsToContents();
+
+            table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+            table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+            for (int i = 0; i < model->rowCount(); ++i)
             {
                 QPushButton *mod = new QPushButton();
                 mod->setText("Modify");
+                mod->setFixedHeight(rowHeight - 10); // Adjust button height
                 table->setIndexWidget(model->index(i, 5), mod);
-                connect(mod, &QPushButton::clicked, [=]() {
+                QObject::connect(mod, &QPushButton::clicked, [=]() {
                     QString tableName = "savings";
                     QString ide = "ids";
-                    std::array<QString, 5> data = this->getRowData(model, i);
-                    this->updateRecord(tableName, ides[i], dbHandler, ide, data);
-                    emit reloadInExSavGo();
+                    std::array<QString, 5> dataArray = this->getRowData(model, i);
+
+                    QStringList dataList;
+                    for (const auto &item : dataArray)
+                    {
+                        dataList.append(item);
+                    }
+
+                    EditDialog *dialog = new EditDialog(EditDialog::Savings);
+                    dialog->setDataSav(dataList);
+
+                    if (dialog->exec() == QDialog::Accepted)
+                    {
+                        QStringList newData = dialog->getData();
+                        std::array<QString, 4> newDataArray = {newData[0], newData[1], newData[2], newData[3]};
+                        this->updateRecord(tableName, ides[i], dbHandler, ide, newDataArray);
+                        emit reloadInExSavGo();
+                    }
+                    delete dialog;
                 });
 
                 QPushButton *del = new QPushButton();
                 del->setText("Delete");
+                del->setFixedHeight(rowHeight - 10);
                 table->setIndexWidget(model->index(i, 6), del);
-                connect(del, &QPushButton::clicked, [=]() {
+                QObject::connect(del, &QPushButton::clicked, [=]() {
                     qDebug() << "del -> " << i << " ide: " << ides[i];
-                    QString tableName = "savings";
-                    QString ide = "ids";
+                    QString tableName;
+                    QString ide;
+                    if (flaga == Savings)
+                    {
+                        tableName = "savings";
+                        ide = "ids";
+                    }
+
                     this->deleteRecord(tableName, ides[i], dbHandler, ide);
                     emit reloadInExSavGo();
                 });
             }
         }
-
-
         break;
     }
 }
@@ -404,20 +501,22 @@ bool UserPanel::deleteRecord(QString &table, int id, DatabaseManager *dbHandler,
     return true;
 }
 
-bool UserPanel::updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName, std::array<QString,5> rowData)
+bool UserPanel::updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName,
+                             std::array<QString, 5> rowData)
 {
-    QString queryString = QString("UPDATE %1 SET amount=%4, currency='%5', description='%6' WHERE %2 = %3;")
-            .arg(table).arg(idName).arg(id)
-            .arg(rowData[0]).arg(rowData[1]).arg(rowData[4]);
-    /*
-    "amount"
-    "curr"
-    "rent"
-    "date"
-    "desc"
-    */
+
+    QString queryString = QString("UPDATE %1 SET amount = %4, currency = '%5', category = '%6', date = '%7', "
+                                  "description = '%8' WHERE %2 = %3;")
+                              .arg(table)
+                              .arg(idName)
+                              .arg(id)
+                              .arg(rowData[0])
+                              .arg(rowData[1])
+                              .arg(rowData[2])
+                              .arg(rowData[3])
+                              .arg(rowData[4]);
     QSqlQuery query(dbHandler->returnDataBase());
-    if(!query.exec(queryString))
+    if (!query.exec(queryString))
     {
         qDebug() << "Error executing query: " << query.lastError().text();
         return false;
@@ -425,18 +524,59 @@ bool UserPanel::updateRecord(QString &table, int id, DatabaseManager *dbHandler,
     return true;
 }
 
-std::array<QString, 5> UserPanel::getRowData(QStandardItemModel* model, const int& in)
+bool UserPanel::updateRecord(QString &table, int id, DatabaseManager *dbHandler, QString &idName,
+                             std::array<QString, 4> rowData)
+{
+    QString queryString =
+        QString("UPDATE %1 SET amount = %4, currency = '%5', date = '%6', description = '%7' WHERE %2 = %3;")
+            .arg(table)
+            .arg(idName)
+            .arg(id)
+            .arg(rowData[0])
+            .arg(rowData[1])
+            .arg(rowData[2])
+            .arg(rowData[3]);
+    QSqlQuery query(dbHandler->returnDataBase());
+    if (!query.exec(queryString))
+    {
+        qDebug() << "Error executing query: " << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+std::array<QString, 5> UserPanel::getRowData(QStandardItemModel *model, const int &in)
 {
     std::array<QString, 5> result;
-    for(int j = 0; j < result.size(); j++)
+    for (int j = 0; j < result.size(); j++)
     {
-        QModelIndex index = model->index(in,j);
+        QModelIndex index = model->index(in, j);
 
-        if(index.isValid())
+        if (index.isValid())
         {
             QVariant dataV = index.data(Qt::DisplayRole);
 
-            if(dataV.isValid())
+            if (dataV.isValid())
+            {
+                result[j] = dataV.toString();
+            }
+        }
+    }
+    return result;
+}
+
+std::array<QString, 4> UserPanel::getRowData(QStandardItemModel *model, const int &in, const int &b)
+{
+    std::array<QString, 4> result;
+    for (int j = 0; j < result.size(); j++)
+    {
+        QModelIndex index = model->index(in, j);
+
+        if (index.isValid())
+        {
+            QVariant dataV = index.data(Qt::DisplayRole);
+
+            if (dataV.isValid())
             {
                 result[j] = dataV.toString();
             }
@@ -474,13 +614,19 @@ void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
 // expenses, incomes, savings
 bool UserPanel::checkIfEmpty(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
 {
-   return (b1->value()>0 && !b2->currentText().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty())?true:false;
+    return (b1->value() > 0 && !b2->currentText().isEmpty() && !b3->currentText().isEmpty() &&
+            !b4->toPlainText().isEmpty())
+               ? true
+               : false;
 }
 
 // goal
 bool UserPanel::checkIfEmpty(QLineEdit *b1, QDoubleSpinBox *b2, QComboBox *b3, QPlainTextEdit *b4)
 {
-    return (!b1->text().isEmpty() && !b2->text().isEmpty() && !b3->currentText().isEmpty() && !b4->toPlainText().isEmpty()) ? true:false;
+    return (!b1->text().isEmpty() && !b2->text().isEmpty() && !b3->currentText().isEmpty() &&
+            !b4->toPlainText().isEmpty())
+               ? true
+               : false;
 }
 
 void UserPanel::setDefaultBox(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)

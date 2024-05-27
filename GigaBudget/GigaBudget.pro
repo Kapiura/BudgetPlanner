@@ -6,6 +6,7 @@ CONFIG += c++17
 
 SOURCES += \
     databasemanager.cpp \
+    editdialog.cpp \
     graph.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -13,6 +14,7 @@ SOURCES += \
 
 HEADERS += \
     databasemanager.h \
+    editdialog.h \
     graph.h \
     mainwindow.h \
     userpanel.h

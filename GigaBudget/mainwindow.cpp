@@ -34,11 +34,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QString title3 = "Incomes";
     QString ex = "expenses";
     QString in = "incomes";
-    QMap<QString,double> ExInMap = dbHandler->ExIn();
+    QMap<QString, double> ExInMap = dbHandler->ExIn();
 
-    up->creatingGraph(0,ExInMap,ui->frameExIn,title1);
-    up->creatingGraph(1,ExInMap,ui->frameEx,title2);
-    up->creatingGraph(2,ExInMap,ui->frameIn,title3);
+    up->creatingGraph(0, ExInMap, ui->frameExIn, title1);
+    up->creatingGraph(1, ExInMap, ui->frameEx, title2);
+    up->creatingGraph(2, ExInMap, ui->frameIn, title3);
 
     QString styleSheet = R"(
            QPlainTextEdit, QTextEdit, QLineEdit, QComboBox, QDoubleSpinBox {
@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
            }
            )";
 
-          setStyleSheet(styleSheet);
+    setStyleSheet(styleSheet);
 }
 
 MainWindow::~MainWindow()
@@ -142,14 +142,13 @@ void MainWindow::login()
     QString title3 = "Incomes";
     QString ex = "expenses";
     QString in = "incomes";
-    QMap<QString,double> ExInMap = dbHandler->ExIn();
-    QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
-    QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    QMap<QString, double> ExInMap = dbHandler->ExIn();
+    QMap<QString, double> ExMap = dbHandler->inExCatAmount(ex);
+    QMap<QString, double> InMap = dbHandler->inExCatAmount(in);
 
-    up->updateGraph(0,ExInMap,title1);
-    up->updateGraph(1,ExMap,title2);
-    up->updateGraph(2,InMap,title3);
-
+    up->updateGraph(0, ExInMap, title1);
+    up->updateGraph(1, ExMap, title2);
+    up->updateGraph(2, InMap, title3);
 }
 
 void MainWindow::reloadInExSavGo()
@@ -179,15 +178,13 @@ void MainWindow::reloadInExSavGo()
     QString title3 = "Incomes";
     QString ex = "expenses";
     QString in = "incomes";
-    QMap<QString,double> ExInMap = dbHandler->ExIn();
-    QMap<QString,double> ExMap = dbHandler->inExCatAmount(ex);
-    QMap<QString,double> InMap = dbHandler->inExCatAmount(in);
+    QMap<QString, double> ExInMap = dbHandler->ExIn();
+    QMap<QString, double> ExMap = dbHandler->inExCatAmount(ex);
+    QMap<QString, double> InMap = dbHandler->inExCatAmount(in);
 
-
-    up->updateGraph(0,ExInMap,title1);
-    up->updateGraph(1,ExMap,title2);
-    up->updateGraph(2,InMap,title3);
-
+    up->updateGraph(0, ExInMap, title1);
+    up->updateGraph(1, ExMap, title2);
+    up->updateGraph(2, InMap, title3);
 }
 
 // adding items to comboboxes in expenses and incomes
@@ -266,7 +263,6 @@ void MainWindow::listSav(QString &queryString, QTableView *table)
         }
     }
     table->setModel(model);
-
 }
 
 void MainWindow::dailyQuote()
@@ -303,8 +299,8 @@ void MainWindow::setDefaultPageIndex()
 
 void MainWindow::on_goalAdd_clicked()
 {
-if(up->checkIfEmpty(ui->goalTitle,ui->goalAmount,ui->goalCurrency,ui->goalDesc))
-{
+    if (up->checkIfEmpty(ui->goalTitle, ui->goalAmount, ui->goalCurrency, ui->goalDesc))
+    {
         QString title = ui->goalTitle->text();
         double amount = ui->goalAmount->value();
         QString currency = ui->goalCurrency->currentText();
@@ -312,36 +308,35 @@ if(up->checkIfEmpty(ui->goalTitle,ui->goalAmount,ui->goalCurrency,ui->goalDesc))
         qDebug() << title << amount << currency << desc;
         dbHandler->addGoal(title, amount, currency, desc);
         this->addingCategoriesItems();
-        up->setDefaultBox(ui->goalTitle,ui->goalAmount,ui->goalCurrency,ui->goalDesc);
+        up->setDefaultBox(ui->goalTitle, ui->goalAmount, ui->goalCurrency, ui->goalDesc);
         this->reloadInExSavGo();
     }
     else
     {
         QString str = "Not enough data";
         QString title = "Error";
-        this->messPopUp(str,title);
+        this->messPopUp(str, title);
     }
-
 }
 
 void MainWindow::on_savingsButton_clicked()
 {
-    if(up->checkIfEmpty(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc))
-  {
-    QString title = ui->savingsGoal->currentText();
-    double amount = ui->savingsAmount->value();
-    QString currency = ui->savingsCurrency->currentText();
-    QString desc = ui->savingsDesc->toPlainText();
-    dbHandler->addSav(title, amount, currency, desc);
-    up->setDefaultBox(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc);
-    this->reloadInExSavGo();
+    if (up->checkIfEmpty(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc))
+    {
+        QString title = ui->savingsGoal->currentText();
+        double amount = ui->savingsAmount->value();
+        QString currency = ui->savingsCurrency->currentText();
+        QString desc = ui->savingsDesc->toPlainText();
+        dbHandler->addSav(title, amount, currency, desc);
+        up->setDefaultBox(ui->savingsAmount, ui->savingsCurrency, ui->savingsGoal, ui->savingsDesc);
+        this->reloadInExSavGo();
     }
     else
     {
-      QString str = "Not enough data";
-      QString title = "Error";
-      this->messPopUp(str,title);
-  }
+        QString str = "Not enough data";
+        QString title = "Error";
+        this->messPopUp(str, title);
+    }
 }
 
 void MainWindow::on_buttonLogout_clicked()
@@ -361,56 +356,62 @@ void MainWindow::on_btnCreateUser_clicked()
 
     // get username and description
     QString username = ui->newUsername->text();
-    QString desc = ui->newDesc->toPlainText();
+    // QString desc = ui->newDesc->toPlainText();
     // adding user to database
-    if (dbHandler->addUser(username, desc))
+    if (username.isEmpty())
     {
-        qDebug() << "User has been added succuessful";
-        QVBoxLayout *layout = new QVBoxLayout;
-        QLabel *usernameLabel = new QLabel("k");
-        layout->addWidget(usernameLabel);
-        this->setDefaultPageIndex();
-        up->deleteDynamicWidgets(ui->users);
-        up->creatingLoginPanel(ui->users, dbHandler);
+        QMessageBox::critical(this, "Error", "Your username isn't correct!");
     }
     else
     {
-        qDebug() << "Something gone wrong dayum";
+        if (dbHandler->addUser(username))
+        {
+            qDebug() << "User has been added succuessful";
+            QVBoxLayout *layout = new QVBoxLayout;
+            QLabel *usernameLabel = new QLabel("k");
+            layout->addWidget(usernameLabel);
+            this->setDefaultPageIndex();
+            up->deleteDynamicWidgets(ui->users);
+            up->creatingLoginPanel(ui->users, dbHandler);
+        }
+        else
+        {
+            qDebug() << "Something gone wrong dayum";
+        }
     }
 }
 
 void MainWindow::on_buttonIncomes_clicked()
 {
-      if(up->checkIfEmpty(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes))
+    if (up->checkIfEmpty(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes))
     {
-          // variables of incomes
-          int id = dbHandler->getUserId();
-          double amount = ui->amountIncomes->value();
-          QString currency = ui->currencyIncomes->currentText();
-          QString desc = ui->descIncomes->toPlainText();
-          QString category = ui->categoryIncomes->currentText();
-          // making a query -  adding record to table incomes
-          dbHandler->addIncomes(id, amount, currency, category, desc);
+        // variables of incomes
+        int id = dbHandler->getUserId();
+        double amount = ui->amountIncomes->value();
+        QString currency = ui->currencyIncomes->currentText();
+        QString desc = ui->descIncomes->toPlainText();
+        QString category = ui->categoryIncomes->currentText();
+        // making a query -  adding record to table incomes
+        dbHandler->addIncomes(id, amount, currency, category, desc);
 
-          QString queryIn = QString("SELECT amount, currency, category, date, "
-                                    "description, idi FROM incomes where u_id = %1")
-                                .arg(DatabaseManager::getUserId());
-          up->listExIn(queryIn, ui->tableIncomes, dbHandler, UserPanel::Incomes);
-          up->setDefaultBox(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes);
-          this->reloadInExSavGo();
-      }
+        QString queryIn = QString("SELECT amount, currency, category, date, "
+                                  "description, idi FROM incomes where u_id = %1")
+                              .arg(DatabaseManager::getUserId());
+        up->listExIn(queryIn, ui->tableIncomes, dbHandler, UserPanel::Incomes);
+        up->setDefaultBox(ui->amountIncomes, ui->currencyIncomes, ui->categoryIncomes, ui->descIncomes);
+        this->reloadInExSavGo();
+    }
     else
-      {
+    {
         QString str = "Not enough data";
         QString title = "Error";
-        this->messPopUp(str,title);
+        this->messPopUp(str, title);
     }
-
 }
 
 void MainWindow::on_buttonExpenses_clicked()
 {
-    if(up->checkIfEmpty(ui->amountExpenses, ui->currencyExpenses, ui->categoryExpenses, ui->descExpenses))
+    if (up->checkIfEmpty(ui->amountExpenses, ui->currencyExpenses, ui->categoryExpenses, ui->descExpenses))
     {
         int id = dbHandler->getUserId();
         double amount = ui->amountExpenses->value();
@@ -431,73 +432,74 @@ void MainWindow::on_buttonExpenses_clicked()
     {
         QString str = "Not enough data";
         QString title = "Error";
-        this->messPopUp(str,title);
+        this->messPopUp(str, title);
     }
-
 }
 
 void MainWindow::on_deleteButton_clicked()
 {
     QMessageBox msgBox;
-           msgBox.setWindowTitle("Potwierdzenie");
-           msgBox.setText("Czy na pewno chcesz usunąć użytkownika?");
-           msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-           msgBox.setDefaultButton(QMessageBox::No);
-           int ret = msgBox.exec();
+    msgBox.setWindowTitle("Potwierdzenie");
+    msgBox.setText("Czy na pewno chcesz usunąć użytkownika?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
 
-           switch (ret) {
-           case QMessageBox::Yes:
-               qDebug() << "deleting";
-               if (dbHandler->deleteUser()) {
-                   qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
-                   this->setDefaultPageIndex();
-                   up->deleteDynamicWidgets(ui->users);
-                   up->creatingLoginPanel(ui->users, dbHandler);
+    switch (ret)
+    {
+    case QMessageBox::Yes:
+        qDebug() << "deleting";
+        if (dbHandler->deleteUser())
+        {
+            qDebug() << QString("User %1 has been deleted").arg(DatabaseManager::userId);
+            this->setDefaultPageIndex();
+            up->deleteDynamicWidgets(ui->users);
+            up->creatingLoginPanel(ui->users, dbHandler);
 
-                   QMessageBox::information(this, "Usunięto użytkownika", QString("Użytkownik %1 został pomyślnie usunięty.").arg(DatabaseManager::userId));
-               } else {
-                   qDebug() << "something went wrong during deleting user";
-                   QMessageBox::critical(this, "Błąd", "Coś poszło nie tak podczas usuwania użytkownika.");
-               }
-               break;
-           case QMessageBox::No:
-               qDebug() << "Deleting stopped";
-               break;
-           default:
-               // should never be reached
-               break;
-           }
-       }
+            QMessageBox::information(
+                this, "Usunięto użytkownika",
+                QString("Użytkownik %1 został pomyślnie usunięty.").arg(DatabaseManager::getCurrentUsername()));
+        }
+        else
+        {
+            qDebug() << "something went wrong during deleting user";
+            QMessageBox::critical(this, "Błąd", "Coś poszło nie tak podczas usuwania użytkownika.");
+        }
+        break;
+    case QMessageBox::No:
+        qDebug() << "Deleting stopped";
+        break;
+    default:
+        // should never be reached
+        break;
+    }
+}
 
 // -----------------------------------------
 // -----------------------------------------
-
 
 void MainWindow::on_btnExportData_clicked()
 {
     // pobieranie danych z bazdy danych essa
-    if(dbHandler->exportData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
+    if (dbHandler->exportData(DatabaseManager::getCurrentUsername(), DatabaseManager::getUserId()))
     {
-        this->messPopUp("Export has been done successfully","Export");
+        this->messPopUp("Export has been done successfully", "Export");
     }
     else
     {
-        this->messPopUp("Something went wrong!","Export");
+        this->messPopUp("Something went wrong!", "Export");
     }
-
 }
-
 
 void MainWindow::on_btnImportData_clicked()
 {
-    if(dbHandler->importData(DatabaseManager::getCurrentUsername(),DatabaseManager::getUserId()))
+    if (dbHandler->importData(DatabaseManager::getCurrentUsername(), DatabaseManager::getUserId()))
     {
-        this->messPopUp("Import has been done successfulluy","Import");
+        this->messPopUp("Import has been done successfulluy", "Import");
         this->reloadInExSavGo();
     }
     else
     {
-        this->messPopUp("Something went wrong!","Import");
+        this->messPopUp("Something went wrong!", "Import");
     }
 }
-
