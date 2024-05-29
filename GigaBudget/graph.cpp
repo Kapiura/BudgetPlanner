@@ -1,5 +1,3 @@
-// graph.cpp
-
 #include "graph.h"
 
 Graph::Graph(QObject *parent) : QObject(parent), frame(nullptr)
@@ -9,7 +7,6 @@ Graph::Graph(QObject *parent) : QObject(parent), frame(nullptr)
     chart = new QChart();
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    created = false;
     chart->setBackgroundBrush(QBrush(QColor("#f0f0f0")));
 }
 
@@ -34,12 +31,16 @@ void Graph::updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const Q
     layout->addWidget(chartView);
 
     series->clear();
+    int colorIndex = 0;
 
     for (auto it = data.begin(); it != data.end(); ++it)
     {
-        series->append(it.key(), it.value());
+        QPieSlice *slice = series->append(it.key(), it.value());
+        // Kolorowanie segmentu
+        QColor color = this->generateColor(colorIndex);
+        slice->setColor(color);
+        colorIndex++;
     }
-    this->colorSlices();
 
     chart->setTitle(title);
 
@@ -52,14 +53,17 @@ void Graph::updateGraph(const QMap<QString, qreal> &data, QFrame *frame, const Q
 
 void Graph::updateGraphWithData(const QMap<QString, qreal> &data, const QString &title)
 {
-
     series->clear();
+    int colorIndex = 0;
 
     for (auto it = data.begin(); it != data.end(); ++it)
     {
-        series->append(it.key(), it.value());
+        QPieSlice *slice = series->append(it.key(), it.value());
+        // Kolorowanie segmentu
+        QColor color = this->generateColor(colorIndex);
+        slice->setColor(color);
+        colorIndex++;
     }
-    this->colorSlices();
 
     chart->setTitle(title);
 
@@ -70,23 +74,25 @@ void Graph::updateGraphWithData(const QMap<QString, qreal> &data, const QString 
 
 void Graph::clearGraph()
 {
-
     series->clear();
-
     chart->setTitle("");
-
     chart->legend()->setVisible(false);
 }
 
-void Graph::colorSlices()
+QColor Graph::generateColor(int index)
 {
-    if (created == false)
-    {
-        for (auto &el : series->slices())
-        {
-            QColor cl(255, 255, 0, 255);
-            el->setColor(cl);
-        }
-        created = true;
-    }
+    static const QList<QColor> colors = {
+        QColor(255, 179, 186), // pastelowy róż
+        QColor(255, 223, 186), // pastelowy pomarańcz
+        QColor(255, 255, 186), // pastelowy żółty
+        QColor(186, 255, 201), // pastelowy zielony
+        QColor(186, 255, 255), // pastelowy cyjan
+        QColor(186, 223, 255), // pastelowy niebieski
+        QColor(186, 186, 255), // pastelowy fiolet
+        QColor(223, 186, 255), // pastelowy purpurowy
+        QColor(255, 186, 255), // pastelowy różowy
+        QColor(255, 186, 223)  // pastelowy koral
+    };
+
+    return colors[index % colors.size()];
 }

@@ -37,6 +37,8 @@ class Graph : public QObject
     QChartView *chartView;
     QFrame *frame;
     bool created;
+    QColor generateColor(const QString &key);
+    QColor generateColor(int index);
 };
 
 #endif // GRAPH_H
