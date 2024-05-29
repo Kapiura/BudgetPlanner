@@ -29,7 +29,6 @@ class Graph : public QObject
     void updateGraph(const QMap<QString, qreal> &data, const QString &title);
     void updateGraphWithData(const QMap<QString, qreal> &data, const QString &title);
     void colorSlices();
-    // void setSliceColor(Q);
 
   private:
     QPieSeries *series;

@@ -133,7 +133,6 @@ MainWindow::~MainWindow()
 void MainWindow::login()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    // ui->welcomeText->setText("Hello " + DatabaseManager::currentUsername);
     this->reloadInExSavGo();
     this->dailyQuote();
 
@@ -170,7 +169,6 @@ void MainWindow::reloadInExSavGo()
                     "ids FROM savings left join goal on g_id=idg where savings.u_id =%1;")
                 .arg(DatabaseManager::getUserId());
     up->listExIn(query, ui->tableSav, dbHandler, UserPanel::Savings);
-    //up->deleteDynamicWidgets(ui->summaryCards);
     up->creatingGoals(ui->sumgoal, dbHandler);
     this->addingCategoriesItems();
 
@@ -188,8 +186,7 @@ void MainWindow::reloadInExSavGo()
     up->updateGraph(1, ExMap, title2);
     up->updateGraph(2, InMap, title3);
 
-
-    //up->currentBudget(ui->summaryCards, dbHandler);
+    // up->currentBudget(ui->summaryCards, dbHandler);
 }
 
 // adding items to comboboxes in expenses and incomes

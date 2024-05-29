@@ -176,7 +176,7 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
             QString ide = "idg";
             QString idg = "g_id";
             QString cat = "other";
-            db->addExpenses(DatabaseManager::userId,goal_amount, currency,cat, title);
+            db->addExpenses(DatabaseManager::userId, goal_amount, currency, cat, title);
             this->deleteRecord(table, id, db, idg);
             this->deleteRecord(tableName, id, db, ide);
             emit reloadInExSavGo();
@@ -619,7 +619,6 @@ void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
     container->setLayout(layout);
     lay->addWidget(container);
 }
-
 
 // expenses, incomes, savings
 bool UserPanel::checkIfEmpty(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)

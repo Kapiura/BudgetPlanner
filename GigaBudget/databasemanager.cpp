@@ -154,7 +154,6 @@ bool DatabaseManager::deleteUser()
     }
     else
     {
-        qDebug() << "Deleting tables";
         QString tables[4] = {"savings", "incomes", "expenses", "goal"};
         for (auto &tab : tables)
         {
@@ -180,7 +179,6 @@ bool DatabaseManager::deleteData(QString &table)
     query.prepare(queryString);
     if (query.exec())
     {
-        qDebug() << "Table " << table << " has been deleted";
         return true;
     }
     else
@@ -261,7 +259,6 @@ bool DatabaseManager::importData(const QString &username, const int &user_id)
     {
         QStringList fileNames = dialog.selectedFiles();
         filePath = fileNames.first();
-        //qDebug() << "Selected file path:" << filePath;
     }
     if (filePath.endsWith(".json", Qt::CaseInsensitive))
     {
@@ -394,14 +391,15 @@ void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
         {
             data += query.value(i).toString();
         }
-        //out << data.trimmed() << "\n";
+        // out << data.trimmed() << "\n";
     }
 }
 
 int DatabaseManager::expensesAmount30days()
 {
     QString queryString =
-        QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+        // QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+            QString("SELECT SUM(amount) FROM expenses WHERE u_id = %1;")
             .arg(DatabaseManager::userId);
     QSqlQuery query(db);
     query.prepare(queryString);
@@ -425,7 +423,8 @@ int DatabaseManager::expensesAmount30days()
 int DatabaseManager::incomesAmount30days()
 {
     QString queryString =
-        QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+        // QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1 AND date >= CURRENT_DATE - INTERVAL 30 DAY;")
+            QString("SELECT SUM(amount) FROM incomes WHERE u_id = %1;")
             .arg(DatabaseManager::userId);
     QSqlQuery query(db);
     query.prepare(queryString);
@@ -463,8 +462,9 @@ QMap<QString, double> DatabaseManager::inExCatAmount(QString &el)
     }
     for (auto &cat : categories)
     {
-        QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3' AND date >= "
-                                      "CURRENT_DATE - INTERVAL 30 DAY;")
+        // QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3' AND date >= "
+        //                               "CURRENT_DATE - INTERVAL 30 DAY;")
+        QString queryString = QString("select sum(amount) from %1 where u_id=%2 and category='%3';")
                                   .arg(el)
                                   .arg(DatabaseManager::userId)
                                   .arg(cat);
