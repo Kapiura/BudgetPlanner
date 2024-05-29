@@ -261,7 +261,7 @@ bool DatabaseManager::importData(const QString &username, const int &user_id)
     {
         QStringList fileNames = dialog.selectedFiles();
         filePath = fileNames.first();
-        qDebug() << "Selected file path:" << filePath;
+        //qDebug() << "Selected file path:" << filePath;
     }
     if (filePath.endsWith(".json", Qt::CaseInsensitive))
     {
@@ -394,7 +394,7 @@ void DatabaseManager::addJsonObjectToFile(QSqlQuery &query, QTextStream &out)
         {
             data += query.value(i).toString();
         }
-        out << data.trimmed() << "\n";
+        //out << data.trimmed() << "\n";
     }
 }
 

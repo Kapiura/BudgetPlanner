@@ -156,7 +156,7 @@ void MainWindow::reloadInExSavGo()
     QString query;
 
     up->deleteDynamicWidgets(ui->sumgoal);
-    //up->deleteDynamicWidgets(ui->summaryCards);
+    up->deleteDynamicWidgets(ui->summaryCards);
     up->currentBudget(ui->summaryCards, dbHandler);
     query = QString("SELECT amount, currency, category, date, description, idi "
                     "FROM incomes where u_id = %1")
@@ -170,6 +170,7 @@ void MainWindow::reloadInExSavGo()
                     "ids FROM savings left join goal on g_id=idg where savings.u_id =%1;")
                 .arg(DatabaseManager::getUserId());
     up->listExIn(query, ui->tableSav, dbHandler, UserPanel::Savings);
+    //up->deleteDynamicWidgets(ui->summaryCards);
     up->creatingGoals(ui->sumgoal, dbHandler);
     this->addingCategoriesItems();
 
@@ -187,8 +188,8 @@ void MainWindow::reloadInExSavGo()
     up->updateGraph(1, ExMap, title2);
     up->updateGraph(2, InMap, title3);
 
-    up->deleteDynamicWidgets(ui->summaryCards);
-    up->currentBudget(ui->summaryCards, dbHandler);
+
+    //up->currentBudget(ui->summaryCards, dbHandler);
 }
 
 // adding items to comboboxes in expenses and incomes
