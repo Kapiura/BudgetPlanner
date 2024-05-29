@@ -156,7 +156,8 @@ void MainWindow::reloadInExSavGo()
     QString query;
 
     up->deleteDynamicWidgets(ui->sumgoal);
-    up->deleteDynamicWidgets(ui->summaryCards);
+    //up->deleteDynamicWidgets(ui->summaryCards);
+    up->currentBudget(ui->summaryCards, dbHandler);
     query = QString("SELECT amount, currency, category, date, description, idi "
                     "FROM incomes where u_id = %1")
                 .arg(DatabaseManager::getUserId());
@@ -170,7 +171,6 @@ void MainWindow::reloadInExSavGo()
                 .arg(DatabaseManager::getUserId());
     up->listExIn(query, ui->tableSav, dbHandler, UserPanel::Savings);
     up->creatingGoals(ui->sumgoal, dbHandler);
-    up->currentBudget(ui->summaryCards, dbHandler);
     this->addingCategoriesItems();
 
     QString title1 = "Incomes and Expenses";
@@ -178,6 +178,7 @@ void MainWindow::reloadInExSavGo()
     QString title3 = "Incomes";
     QString ex = "expenses";
     QString in = "incomes";
+
     QMap<QString, double> ExInMap = dbHandler->ExIn();
     QMap<QString, double> ExMap = dbHandler->inExCatAmount(ex);
     QMap<QString, double> InMap = dbHandler->inExCatAmount(in);
@@ -185,6 +186,9 @@ void MainWindow::reloadInExSavGo()
     up->updateGraph(0, ExInMap, title1);
     up->updateGraph(1, ExMap, title2);
     up->updateGraph(2, InMap, title3);
+
+    up->deleteDynamicWidgets(ui->summaryCards);
+    up->currentBudget(ui->summaryCards, dbHandler);
 }
 
 // adding items to comboboxes in expenses and incomes
@@ -353,10 +357,7 @@ void MainWindow::on_buttonLogout_clicked()
 
 void MainWindow::on_btnCreateUser_clicked()
 {
-
-    // get username and description
     QString username = ui->newUsername->text();
-    // QString desc = ui->newDesc->toPlainText();
     // adding user to database
     if (username.isEmpty())
     {
@@ -373,6 +374,7 @@ void MainWindow::on_btnCreateUser_clicked()
             this->setDefaultPageIndex();
             up->deleteDynamicWidgets(ui->users);
             up->creatingLoginPanel(ui->users, dbHandler);
+            ui->newUsername->setText("");
         }
         else
         {

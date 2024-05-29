@@ -587,22 +587,29 @@ std::array<QString, 4> UserPanel::getRowData(QStandardItemModel *model, const in
 
 void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
 {
-    QString queryString = QString("SELECT ((SELECT SUM(amount) FROM incomes WHERE u_id = %1) - "
-                                  "(SELECT SUM(amount) FROM expenses WHERE u_id = %1));")
-                              .arg(DatabaseManager::getUserId());
+    QString queryString = QString("SELECT ((SELECT COALESCE(SUM(amount), 0) FROM incomes WHERE u_id = ?) - "
+                                  "(SELECT COALESCE(SUM(amount), 0) FROM expenses WHERE u_id = ?));");
     QSqlQuery query(db->returnDataBase());
     query.prepare(queryString);
-    query.exec();
-    double id;
-    while (query.next())
+    query.addBindValue(DatabaseManager::getUserId());
+    query.addBindValue(DatabaseManager::getUserId());
+
+    double balanceValue = 0.0;
+
+    if (query.exec() && query.next())
     {
-        id = query.value(0).toDouble();
+        balanceValue = query.value(0).toDouble();
     }
+    else
+    {
+        qWarning() << "Query failed:" << query.lastError();
+    }
+
     QWidget *container = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
 
     QLabel *label = new QLabel(DatabaseManager::getCurrentUsername());
-    QLabel *balance = new QLabel(QString("Current balance: %1").arg(id));
+    QLabel *balance = new QLabel(QString("Current balance: %1").arg(balanceValue));
 
     layout->addWidget(label);
     layout->addWidget(balance);
@@ -610,6 +617,7 @@ void UserPanel::currentBudget(QGridLayout *lay, DatabaseManager *db)
     container->setLayout(layout);
     lay->addWidget(container);
 }
+
 
 // expenses, incomes, savings
 bool UserPanel::checkIfEmpty(QDoubleSpinBox *b1, QComboBox *b2, QComboBox *b3, QTextEdit *b4)
