@@ -175,6 +175,8 @@ void UserPanel::creatingGoals(QGridLayout *area, DatabaseManager *db)
             QString table = "savings";
             QString ide = "idg";
             QString idg = "g_id";
+            QString cat = "other";
+            db->addExpenses(DatabaseManager::userId,goal_amount, currency,cat, title);
             this->deleteRecord(table, id, db, idg);
             this->deleteRecord(tableName, id, db, ide);
             emit reloadInExSavGo();
@@ -458,7 +460,7 @@ void UserPanel::listExIn(QString &queryString, QTableView *table, DatabaseManage
 
                     if (dialog->exec() == QDialog::Accepted)
                     {
-                        QStringList newData = dialog->getData();
+                        QStringList newData = dialog->getDataSav();
                         std::array<QString, 4> newDataArray = {newData[0], newData[1], newData[2], newData[3]};
                         this->updateRecord(tableName, ides[i], dbHandler, ide, newDataArray);
                         emit reloadInExSavGo();
