@@ -1,5 +1,5 @@
 # Planer Budżetu Osobistego - GigaBudget
-##### Kacper Wiszniewski - ISSP rok 2 - Semestr 4 - Projekt w ramach przedmiotu "Indywidualny projekt programistyczny" - 2024
+##### ISSP rok 2 - Semestr 4 - Projekt w ramach przedmiotu "Indywidualny projekt programistyczny" - 2024
 
 ## Opis
 
